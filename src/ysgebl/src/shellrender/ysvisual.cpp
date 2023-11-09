@@ -102,6 +102,7 @@ void YsVisualSrf::Draw(const YsMatrix4x4 &modelView,unsigned int drawFlag) const
 		opt.solidPolygon=YSTRUE;
 		opt.transparentPolygon=YSFALSE;
 		opt.light=YSFALSE;
+		opt.polygonEdge=YSFALSE;
 		this->Render(modelView,opt);
 	}
 	if(0!=(YsVisual::DRAWTRANSPARENT&drawFlag))
