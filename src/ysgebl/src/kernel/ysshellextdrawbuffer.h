@@ -33,10 +33,93 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <ysglbuffer.h>
 #include "ysshellext.h"
+#include <ystask.h>
 
 class YsShellExtDrawingBuffer
 {
-	class RemakePolygonBufferTask;
+	public:
+		class ShapeInfo
+		{
+		public:
+			const YsShellExt* shlExtPtr;
+			const YsShellExt::TemporaryModification* modPtr;
+
+			ShapeInfo()
+			{
+				CleanUp();
+			}
+			void CleanUp(void)
+			{
+				shlExtPtr = NULL;
+				modPtr = NULL;
+			}
+		};
+
+		class YsShellExtDrawingBuffer::RemakePolygonBufferTask : public YsTask
+		{
+		public:
+			// Output
+			YsGLVertexBuffer normalEdgePosBuffer;
+			YsArray <int> normalEdgeIdxBuffer;
+			YsGLVertexBuffer shrunkEdgePosBuffer;
+			YsArray <int> shrunkEdgeIdxBuffer;
+
+			YsGLVertexBuffer solidShadedVtxBuffer;
+			YsGLNormalBuffer solidShadedNomBuffer;
+			YsGLColorBuffer solidShadedColBuffer;
+			YsArray <int> solidShadedIdxBuffer;
+
+			YsGLVertexBuffer solidUnshadedVtxBuffer;
+			YsGLColorBuffer solidUnshadedColBuffer;
+			YsArray <int> solidUnshadedIdxBuffer;
+
+			YsGLVertexBuffer trspShadedVtxBuffer;
+			YsGLNormalBuffer trspShadedNomBuffer;
+			YsGLColorBuffer trspShadedColBuffer;
+			YsArray <int> trspShadedIdxBuffer;
+
+			YsGLVertexBuffer trspUnshadedVtxBuffer;
+			YsGLColorBuffer trspUnshadedColBuffer;
+			YsArray <int> trspUnshadedIdxBuffer;
+
+			YsGLVertexBuffer backFaceVtxBuffer;
+			YsGLColorBuffer backFaceColBuffer;
+			YsArray <int> backFaceIdxBuffer;
+
+			YsGLVertexBuffer invisibleButPickablePolygonVtxBuffer;
+			YsArray <int> invisibleButPickablePolygonIdxBuffer;
+
+			YsGLVertexBuffer lightVtxBuffer;
+			YsGLColorBuffer lightColBuffer;
+			YsGLPointSizeBuffer lightSizeBuffer;
+
+			// Input
+			YsArray <YsShellVertexHandle> edVtHdArray;
+			YsArray <YsShellPolygonHandle> plHdArray;
+			const YsShellExtDrawingBuffer::ShapeInfo* shapeInfoPtr;
+			const YsShellExtDrawingBuffer* drawingBuffer;
+			double polygonShrinkRatioForPicking;
+			YSBOOL viewPortEnabled;
+			YsVec3 viewPort[2];
+			YSBOOL crossSectionEnabled;
+			YsPlane crossSection;
+			YSBOOL drawBackFaceInDifferentColor;
+			YsColor backFaceColor;
+			const YsHashTable <YsVec3>* vtxNomHashPtr;
+
+			virtual void Run(void);  // Implementation of the thread task.
+
+			void Cleanup(void);
+
+			void AddPolygonFragment(
+				const YsShellExtDrawingBuffer::ShapeInfo& shapeInfo,
+				YsShellPolygonHandle plHd, const YsVec3& defNom, const YsHashTable <YsVec3>& vtxNomHash, const YsShellVertexHandle triVtHd[3], YSBOOL flatShaded,
+				YSBOOL addAsBackFace);
+			void AddPolygonFragment(
+				const YsVec3 plVtPos[3], const YsVec3 plVtNom[3], unsigned int index, const YsColor& col, YSBOOL lighting,
+				YSBOOL addAsBackFace, YSBOOL invisibleButPickable);
+		};
+
 	class RemakeSelectedPolygonBufferTask;
 	class RemakeSelectedFaceGroupBufferTask;
 
@@ -49,24 +132,6 @@ class YsShellExtDrawingBuffer
 public:
 	void SetTemporaryConstEdgeColor(const YsShellExt &shl,YsShellExt::ConstEdgeHandle ceHd,YsColor col);
 	void ResetTemporaryConstEdgeColor(const YsShellExt &shl);
-
-public:
-	class ShapeInfo
-	{
-	public:
-		const YsShellExt *shlExtPtr;
-		const YsShellExt::TemporaryModification *modPtr;
-
-		ShapeInfo()
-		{
-			CleanUp();
-		}
-		void CleanUp(void)
-		{
-			shlExtPtr=NULL;
-			modPtr=NULL;
-		}
-	};
 
 
 public:
@@ -147,6 +212,10 @@ public:
 	YsGLVertexBuffer selectedFaceGroupVtxBuffer;
 	YsArray <int> selectedFaceGroupIdxBuffer;
 
+	YsShellExtDrawingBuffer::RemakePolygonBufferTask remakePolygonBufferTask;
+
+	//YsArray <YsShellExtDrawingBuffer::RemakePolygonBufferTask, 32> taskArray;
+	//YsArray <YsTask*, 32> taskPtrArray;
 
 public:
 	YsShellExtDrawingBuffer();
