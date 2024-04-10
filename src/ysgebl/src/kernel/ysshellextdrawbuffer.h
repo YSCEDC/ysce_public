@@ -34,6 +34,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ysglbuffer.h>
 #include "ysshellext.h"
 #include <ystask.h>
+#include <thread>
 
 class YsShellExtDrawingBuffer
 {
@@ -213,11 +214,14 @@ public:
 	YsArray <int> selectedFaceGroupIdxBuffer;
 
 	YsShellExtDrawingBuffer::RemakePolygonBufferTask remakePolygonBufferTask;
+	
+	std::thread *remakePolygonBufferTaskThread;
 
 	//YsArray <YsShellExtDrawingBuffer::RemakePolygonBufferTask, 32> taskArray;
 	//YsArray <YsTask*, 32> taskPtrArray;
 
 public:
+	~YsShellExtDrawingBuffer();
 	YsShellExtDrawingBuffer();
 	void EnableViewPort(void);
 	void DisableViewPort(void);
@@ -237,10 +241,8 @@ public:
 	template <const int N>
 	void RemakeSelectedVertexBuffer(const class YsShellExt &shl,const double selectedVertexMarkerRadius,const YsArray <YsShellVertexHandle,N> &selVtHd);
 
-	void RemakePolygonBuffer(const ShapeInfo &shapeInfo,const double polygonShrinkRatioForPicking);
-	void RemakePolygonBufferSingleThreaded(const class YsShellExt& shl, const double polygonShrinkRatioForPicking);
-	void RemakePolygonBuffer(const class YsShellExt &shl,const double polygonShrinkRatioForPicking);
-	void RemakePolygonBufferSingleThreaded(const ShapeInfo& shapeInfo, const double polygonShrinkRatioForPicking);
+	void RemakePolygonBuffer(const class YsShellExt& shl, const double polygonShrinkRatioForPicking);
+	void RemakePolygonBuffer(const ShapeInfo& shapeInfo, const double polygonShrinkRatioForPicking);
 
 	void AddPolygonAsLight(const class YsShellExt &shl,const double lightSize);
 

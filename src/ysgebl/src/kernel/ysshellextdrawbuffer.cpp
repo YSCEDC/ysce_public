@@ -36,7 +36,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#define YS_RUN_PARALLEL
 
-static bool YS_RUN_PARALLEL = false;
+static bool YS_RUN_PARALLEL = true;
 
 YsColor YsShellExtDrawingBuffer::GetConstEdgeColor(const YsShellExt &shl,YsShellExt::ConstEdgeHandle ceHd) const
 {
@@ -56,7 +56,10 @@ void YsShellExtDrawingBuffer::ResetTemporaryConstEdgeColor(const YsShellExt &shl
 	temporaryCeColor.CleanUp();
 }
 
-
+YsShellExtDrawingBuffer::~YsShellExtDrawingBuffer()
+{
+	delete remakePolygonBufferTaskThread;
+}
 YsShellExtDrawingBuffer::YsShellExtDrawingBuffer()
 {
 	viewPortEnabled=YSFALSE;
@@ -69,13 +72,7 @@ YsShellExtDrawingBuffer::YsShellExtDrawingBuffer()
 	drawBackFaceInDifferentColor=YSTRUE;
 	backFaceColor.SetIntRGB(128,16,16);
 
-	//YsArray <YsShellExtDrawingBuffer::RemakePolygonBufferTask, 32> taskArray(nThread, NULL);
-	//YsArray <YsTask*, 32> taskPtrArray(nThread, NULL);
-
-	//taskArray = new YsArray<YsShellExtDrawingBuffer::RemakePolygonBufferTask, 32>(4, nullptr);
-	//taskPtrArray = new YsArray<YsTask*, 32>(4, nullptr);
-
-
+	remakePolygonBufferTaskThread = nullptr;
 }
 
 void YsShellExtDrawingBuffer::EnableViewPort(void)
@@ -612,32 +609,17 @@ void YsShellExtDrawingBuffer::RemakePolygonBufferTask::AddPolygonFragment(
 	}
 }
 
-void YsShellExtDrawingBuffer::RemakePolygonBuffer(const class YsShellExt &shl,const double polygonShrinkRatioForPicking)
-{
-	ShapeInfo shapeInfo;
-	shapeInfo.shlExtPtr=&shl;
-	shapeInfo.modPtr=nullptr;
-	if (YS_RUN_PARALLEL)
-	{
-		RemakePolygonBuffer(shapeInfo, polygonShrinkRatioForPicking);
-	}
-	else
-	{
-		RemakePolygonBufferSingleThreaded(shapeInfo, polygonShrinkRatioForPicking);
-	}
-}
-
-void YsShellExtDrawingBuffer::RemakePolygonBufferSingleThreaded(const class YsShellExt& shl, const double polygonShrinkRatioForPicking)
+void YsShellExtDrawingBuffer::RemakePolygonBuffer(const class YsShellExt& shl, const double polygonShrinkRatioForPicking)
 {
 	ShapeInfo shapeInfo;
 	shapeInfo.shlExtPtr = &shl;
 	shapeInfo.modPtr = nullptr;
-	RemakePolygonBufferSingleThreaded(shapeInfo, polygonShrinkRatioForPicking);
+	RemakePolygonBuffer(shapeInfo, polygonShrinkRatioForPicking);
 }
 
 //creates a single RemakePolygonBuffer task and runs it on the calling thread
 //(RemakePolygonBuffer spawns a lot of std::threads which seem to be causing performance issues)
-void YsShellExtDrawingBuffer::RemakePolygonBufferSingleThreaded(const ShapeInfo& shapeInfo, const double polygonShrinkRatioForPicking)
+void YsShellExtDrawingBuffer::RemakePolygonBuffer(const ShapeInfo& shapeInfo, const double polygonShrinkRatioForPicking)
 {
 	const auto& shl = *shapeInfo.shlExtPtr;
 
@@ -675,8 +657,6 @@ void YsShellExtDrawingBuffer::RemakePolygonBufferSingleThreaded(const ShapeInfo&
 	lightVtxBuffer.CleanUp();
 	lightColBuffer.CleanUp();
 	lightSizeBuffer.CleanUp();
-
-	//YsShellExtDrawingBuffer::RemakePolygonBufferTask task;
 
 	if (YSTRUE == shl.IsSearchEnabled())
 	{
@@ -723,8 +703,15 @@ void YsShellExtDrawingBuffer::RemakePolygonBufferSingleThreaded(const ShapeInfo&
 			remakePolygonBufferTask.plHdArray.Append(plHd);
 		}
 	}
-
-	remakePolygonBufferTask.StartLocal();
+	if (YS_RUN_PARALLEL)
+	{
+		remakePolygonBufferTaskThread = new std::thread(RemakePolygonBufferTask::Start, &remakePolygonBufferTask);
+		remakePolygonBufferTaskThread->join();
+	}
+	else
+	{
+		remakePolygonBufferTask.StartLocal();
+	}
 
 	normalEdgePosBuffer.AddAndCleanUpIncoming(remakePolygonBufferTask.normalEdgePosBuffer);
 	normalEdgeIdxBuffer.Append(remakePolygonBufferTask.normalEdgeIdxBuffer);
@@ -761,162 +748,6 @@ void YsShellExtDrawingBuffer::RemakePolygonBufferSingleThreaded(const ShapeInfo&
 	lightSizeBuffer.AddAndCleanUpIncoming(remakePolygonBufferTask.lightSizeBuffer);
 
 	remakePolygonBufferTask.Cleanup();
-}
-
-void YsShellExtDrawingBuffer::RemakePolygonBuffer(const ShapeInfo &shapeInfo,const double polygonShrinkRatioForPicking)
-{
-	const auto &shl=*shapeInfo.shlExtPtr;
-
-	normalEdgePosBuffer.CleanUp();
-	normalEdgeIdxBuffer.CleanUp();
-	shrunkEdgePosBuffer.CleanUp();
-	shrunkEdgeIdxBuffer.CleanUp();
-
-	// See ysdnmgl2.0.cpp
-	solidShadedVtxBuffer.CleanUp();
-	solidShadedNomBuffer.CleanUp();
-	solidShadedColBuffer.CleanUp();
-	solidShadedIdxBuffer.CleanUp();
-
-	solidUnshadedVtxBuffer.CleanUp();
-	solidUnshadedColBuffer.CleanUp();
-	solidUnshadedIdxBuffer.CleanUp();
-
-	trspShadedVtxBuffer.CleanUp();
-	trspShadedNomBuffer.CleanUp();
-	trspShadedColBuffer.CleanUp();
-	trspShadedIdxBuffer.CleanUp();
-
-	trspUnshadedVtxBuffer.CleanUp();
-	trspUnshadedColBuffer.CleanUp();
-	trspUnshadedIdxBuffer.CleanUp();
-
-	backFaceVtxBuffer.CleanUp();
-	backFaceColBuffer.CleanUp();
-	backFaceIdxBuffer.CleanUp();
-
-	invisibleButPickablePolygonVtxBuffer.CleanUp();
-	invisibleButPickablePolygonIdxBuffer.CleanUp();
-
-	lightVtxBuffer.CleanUp();
-	lightColBuffer.CleanUp();
-	lightSizeBuffer.CleanUp();
-
-
-	int nThread=(int)std::thread::hardware_concurrency();
-	if(0==nThread)
-	{
-		nThread=4;
-	}
-	YsArray <YsShellExtDrawingBuffer::RemakePolygonBufferTask,32> taskArray(nThread,NULL);
-	YsArray <YsTask *,32> taskPtrArray(nThread,NULL);
-
-	if(YSTRUE==shl.IsSearchEnabled())
-	{
-		int taskIdx=0;
-		for(YsShellEdgeEnumHandle edHd=NULL; YSOK==shl.MoveToNextEdge(edHd); )
-		{
-			YsShellVertexHandle edVtHd[2];
-			shl.GetEdge(edVtHd[0],edVtHd[1],edHd);
-
-			taskArray[taskIdx].edVtHdArray.Append(2,edVtHd);
-			++taskIdx;
-			if(nThread<=taskIdx)
-			{
-				taskIdx=0;
-			}
-		}
-	}
-	else
-	{
-		int taskIdx=0;
-		for(auto plHd : shl.AllPolygon())
-		{
-			auto plVtHd=shl.GetPolygonVertex(plHd);
-			for(YSSIZE_T idx=0; idx<plVtHd.GetN(); ++idx)
-			{
-				YsShellVertexHandle edVtHd[2]={plVtHd[idx],plVtHd.GetCyclic(idx+1)};
-
-				taskArray[taskIdx].edVtHdArray.Append(2,edVtHd);
-				++taskIdx;
-				if(nThread<=taskIdx)
-				{
-					taskIdx=0;
-				}
-			}
-		}
-	}
-
-	YsHashTable <YsVec3> vtxNomHash;
-	{
-		MakeVertexNormalCache(vtxNomHash,shl);
-
-		for(int i=0; i<nThread; ++i)
-		{
-			taskArray[i].shapeInfoPtr=&shapeInfo;
-			taskArray[i].polygonShrinkRatioForPicking=polygonShrinkRatioForPicking;
-			taskArray[i].viewPortEnabled=viewPortEnabled;
-			taskArray[i].viewPort[0]=viewPort[0];
-			taskArray[i].viewPort[1]=viewPort[1];
-			taskArray[i].crossSectionEnabled=crossSectionEnabled;
-			taskArray[i].crossSection=crossSection;
-			taskArray[i].drawingBuffer=this;
-			taskArray[i].drawBackFaceInDifferentColor=drawBackFaceInDifferentColor;
-			taskArray[i].backFaceColor=backFaceColor;
-			taskArray[i].vtxNomHashPtr=&vtxNomHash;
-			taskPtrArray[i]=&taskArray[i];
-		}
-
-		int idx=0;
-		for(YsShellPolygonHandle plHd=NULL; YSOK==shl.MoveToNextPolygon(plHd); )
-		{
-			taskArray[idx].plHdArray.Append(plHd);
-			++idx;
-			if(nThread<=idx)
-			{
-				idx=0;
-			}
-		}
-	}
-
-	YsRunTaskParallel(taskPtrArray);
-
-	for(int i=0; i<nThread; ++i)
-	{
-		normalEdgePosBuffer.AddAndCleanUpIncoming(taskArray[i].normalEdgePosBuffer);
-		normalEdgeIdxBuffer.Append(taskArray[i].normalEdgeIdxBuffer);
-		shrunkEdgePosBuffer.AddAndCleanUpIncoming(taskArray[i].shrunkEdgePosBuffer);
-		shrunkEdgeIdxBuffer.Append(taskArray[i].shrunkEdgeIdxBuffer);
-
-		solidShadedVtxBuffer.AddAndCleanUpIncoming(taskArray[i].solidShadedVtxBuffer);
-		solidShadedNomBuffer.AddAndCleanUpIncoming(taskArray[i].solidShadedNomBuffer);
-		solidShadedColBuffer.AddAndCleanUpIncoming(taskArray[i].solidShadedColBuffer);
-		solidShadedIdxBuffer.Append(taskArray[i].solidShadedIdxBuffer);
-
-		solidUnshadedVtxBuffer.AddAndCleanUpIncoming(taskArray[i].solidUnshadedVtxBuffer);
-		solidUnshadedColBuffer.AddAndCleanUpIncoming(taskArray[i].solidUnshadedColBuffer);
-		solidUnshadedIdxBuffer.Append(taskArray[i].solidUnshadedIdxBuffer);
-
-		trspShadedVtxBuffer.AddAndCleanUpIncoming(taskArray[i].trspShadedVtxBuffer);
-		trspShadedNomBuffer.AddAndCleanUpIncoming(taskArray[i].trspShadedNomBuffer);
-		trspShadedColBuffer.AddAndCleanUpIncoming(taskArray[i].trspShadedColBuffer);
-		trspShadedIdxBuffer.Append(taskArray[i].trspShadedIdxBuffer);
-
-		backFaceVtxBuffer.AddAndCleanUpIncoming(taskArray[i].backFaceVtxBuffer);
-		backFaceColBuffer.AddAndCleanUpIncoming(taskArray[i].backFaceColBuffer);
-		backFaceIdxBuffer.Append(taskArray[i].backFaceIdxBuffer);
-
-		trspUnshadedVtxBuffer.AddAndCleanUpIncoming(taskArray[i].trspUnshadedVtxBuffer);
-		trspUnshadedColBuffer.AddAndCleanUpIncoming(taskArray[i].trspUnshadedColBuffer);
-		trspUnshadedIdxBuffer.Append(taskArray[i].trspUnshadedIdxBuffer);
-
-		invisibleButPickablePolygonVtxBuffer.AddAndCleanUpIncoming(taskArray[i].invisibleButPickablePolygonVtxBuffer);
-		invisibleButPickablePolygonIdxBuffer.Append(taskArray[i].invisibleButPickablePolygonIdxBuffer);
-
-		lightVtxBuffer.AddAndCleanUpIncoming(taskArray[i].lightVtxBuffer);
-		lightColBuffer.AddAndCleanUpIncoming(taskArray[i].lightColBuffer);
-		lightSizeBuffer.AddAndCleanUpIncoming(taskArray[i].lightSizeBuffer);
-	}
 }
 
 void YsShellExtDrawingBuffer::AddPolygonAsLight(const class YsShellExt &shl,const double lightSize)
