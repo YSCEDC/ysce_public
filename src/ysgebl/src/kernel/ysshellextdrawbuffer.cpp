@@ -36,7 +36,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#define YS_RUN_PARALLEL
 
-static bool YS_RUN_PARALLEL = true;
+static bool YS_RUN_PARALLEL = false;
 
 YsColor YsShellExtDrawingBuffer::GetConstEdgeColor(const YsShellExt &shl,YsShellExt::ConstEdgeHandle ceHd) const
 {
@@ -219,6 +219,23 @@ void YsShellExtDrawingBuffer::RemakeSelectedVertexBuffer(const class YsShellExt 
 
 ////////////////////////////////////////////////////////////
 
+
+void YsShellExtDrawingBuffer::RemakePolygonBufferTask::CleanupIdxAndHd(void)
+{
+	normalEdgeIdxBuffer.CleanUp();
+	shrunkEdgeIdxBuffer.CleanUp();
+	solidShadedIdxBuffer.CleanUp();
+	solidUnshadedIdxBuffer.CleanUp();
+	trspShadedIdxBuffer.CleanUp();
+	trspUnshadedIdxBuffer.CleanUp();
+	backFaceIdxBuffer.CleanUp();
+	invisibleButPickablePolygonIdxBuffer.CleanUp();
+
+	edVtHdArray.CleanUp();
+	plHdArray.CleanUp();
+
+	SetIdle();
+}
 
 
 void YsShellExtDrawingBuffer::RemakePolygonBufferTask::Cleanup(void)
@@ -747,7 +764,7 @@ void YsShellExtDrawingBuffer::RemakePolygonBuffer(const ShapeInfo& shapeInfo, co
 	lightColBuffer.AddAndCleanUpIncoming(remakePolygonBufferTask.lightColBuffer);
 	lightSizeBuffer.AddAndCleanUpIncoming(remakePolygonBufferTask.lightSizeBuffer);
 
-	remakePolygonBufferTask.Cleanup();
+	remakePolygonBufferTask.CleanupIdxAndHd();
 }
 
 void YsShellExtDrawingBuffer::AddPolygonAsLight(const class YsShellExt &shl,const double lightSize)

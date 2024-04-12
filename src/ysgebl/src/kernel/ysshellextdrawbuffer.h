@@ -111,6 +111,7 @@ class YsShellExtDrawingBuffer
 			virtual void Run(void);  // Implementation of the thread task.
 
 			void Cleanup(void);
+			void CleanupIdxAndHd(void);
 
 			void AddPolygonFragment(
 				const YsShellExtDrawingBuffer::ShapeInfo& shapeInfo,
