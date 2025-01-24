@@ -139,7 +139,8 @@ template <class T,const YSSIZE_T _size>
 class YsStaticArray
 {
 private:
-	T dat[_size];
+	//T dat[_size];
+	std::vector<T> dat = std::vector<T>(_size);
 
 public:
 	/*! Operator for accessing the array. */
@@ -157,27 +158,54 @@ public:
 	/*! Cast operator that returns constant pointer to the array. */
 	operator const T *() const
 	{
-		return dat;
+		return dat.data();
 	}
 
 	/*! Cast operator that returns non-constant pointer to the array. */
 	operator T *()
 	{
-		return dat;
+		return dat.data();
 	}
 
 	const YSSIZE_T GetN(void) const
 	{
-		return _size;
+		return dat.size();
 	}
 
 	const T &GetCyclic(YSSIZE_T idx) const
 	{
-		return YsGetCyclic(_size,dat,idx);
+		if (0 < dat.size())
+		{
+			// By the way, is it guaranteed that (-3)%7 is always -3, not 4?  Common sense tells it is -3, but I'm not sure if it was a guaranteed behavior in C++.
+			idx = idx % dat.size();
+			if (0 > idx)
+			{
+				idx += dat.size();
+			}
+			return dat[idx];
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	T &GetCyclic(YSSIZE_T idx)
 	{
-		return YsGetCyclic(_size,dat,idx);
+
+		if (0 < dat.size())
+		{
+			// By the way, is it guaranteed that (-3)%7 is always -3, not 4?  Common sense tells it is -3, but I'm not sure if it was a guaranteed behavior in C++.
+			idx = idx % dat.size();
+			if (0 > idx)
+			{
+				idx += dat.size();
+			}
+			return dat[idx];
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 
 // STL-like iterator support begin >>
