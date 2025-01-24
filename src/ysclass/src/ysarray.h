@@ -421,15 +421,16 @@ template <class T,const int MinLen>
 class YsArrayPreAlloc
 {
 private:
-	T pre[MinLen];
+	//T pre[MinLen];
+	std::vector<T> pre = std::vector<T>(MinLen);
 public:
 	inline T *Prealloc(void)
 	{
-		return pre;
+		return pre.data();
 	}
 	inline const T *Prealloc(void) const
 	{
-		return pre;
+		return pre.data();
 	}
 };
 
