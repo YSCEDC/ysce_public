@@ -371,7 +371,8 @@ class YsFixedLengthArray
 {
 public:
 	/*! Array buffer */
-	T dat[_size];
+	//T dat[_size];
+	std::vector<T> dat = std::vector<T>(_size);
 
 	/*! Operator for accessing the array. */
 	inline const T &operator[](int idx) const
@@ -388,13 +389,13 @@ public:
 	/*! Cast operator that returns constant pointer to the array. */
 	operator const T *() const
 	{
-		return dat;
+		return dat.data();
 	}
 
 	/*! Cast operator that returns non-constant pointer to the array. */
 	operator T *()
 	{
-		return dat;
+		return dat.data();
 	}
 };
 

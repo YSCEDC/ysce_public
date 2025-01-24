@@ -62,7 +62,7 @@ public:
 	}
 	operator const int *() const
 	{
-		return dat;
+		return dat.data();
 	}
 	const char *Text(char buf[],const char *fmt="%d %d") const;
 
@@ -444,7 +444,7 @@ public:
 	}
 	operator const int *() const
 	{
-		return dat;
+		return dat.data();
 	}
 	const char *Text(char buf[],const char *fmt="%d %d %d") const;
 
