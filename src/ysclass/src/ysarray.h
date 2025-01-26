@@ -522,8 +522,9 @@ private:
 
 
 protected:
-	SizeType nv,nAvailable;
-	T *vv;
+	//SizeType nv,nAvailable;
+	//T *vv;
+	std::vector<T> vv;
 
 // STL-like iterator support begin >>
 public:
@@ -985,85 +986,82 @@ public:
 	/*! For better interoperability with STL */
 	inline YSSIZE_T size(void) const
 	{
-		return GetN();
+		return vv.size();
 	}
 	/*! For better interoperability with STL */
 	inline void resize(YSSIZE_T newSize)
 	{
-		Resize(newSize);
+		vv.resize(newSize);
 	}
 	/*! For better interoperability with STL */
 	inline void clear(void)
 	{
-		CleanUp();
+		vv.clear();
 	}
 	/*! For better interoperability with STL */
 	inline void push_back(const T &value)
 	{
-		Add(value);
+		vv.push_back(value);
 	}
 	/*! For better interoperability with STL */
-	inline void push_back(T &&value)
+	inline void push_back(T&& value)
 	{
-		Add(value);
+		vv.push_back(value);
 	}
 	/*! For better interoperability with STL */
 	inline void pop_back(void)
 	{
-		DeleteLast();
+		vv.pop_back();
 	}
 	/*! For better interoperability with STL */
 	inline const T &back(void) const
 	{
-		return Last();
+		return vv.back();
 	}
 	/*! For better interoperability with STL */
 	inline T &back(void)
 	{
-		return Last();
+		return vv.back();
 	}
 	/*! For better interoperability with STL */
 	inline const T &front(void) const
 	{
-		return vv[0];
+		return vv.front();
 	}
 	/*! For better interoperability with STL */
 	inline T &front(void)
 	{
-		return vv[0];
+		return vv.front();
 	}
 	/*! For better interoperability with STL */
 	inline const T *data(void) const
 	{
-		return GetArray();
+		return vv.data();
 	}
 	/*! For better interoperability with STL */
 	inline T *data(void)
 	{
-		return GetEditableArray();
+		return vv.data();
 	}
 	/*! For better interoperability with STL */
 	inline bool empty(void) const
 	{
-		return (0==GetN());
+		return vv.empty();
 	}
 	/*! For better interoperability with STL */
 	inline void swap(YsArray <T,MinimumLength,SizeType> &from)
 	{
-		YsArray <T,MinimumLength,SizeType> tmp;
-		tmp.MoveFrom(*this);
-		this->MoveFrom(from);
-		from.MoveFrom(tmp);
+		vv.swap(from);
 	}
 	/*! For better interoperability with STL */
 	inline T& at(YSSIZE_T idx)
 	{
-		return (*this)[idx];
+		return vv.at(idx);
 	}
 	/*! For better interoperability with STL */
 	inline const T& at(YSSIZE_T idx) const
 	{
-		return (*this)[idx];
+		return vv.at(idx);
 	}
 };
 
@@ -1198,26 +1196,17 @@ inline YSRESULT YsArray<T,MinimumLength,SizeType>::Append(const T &itm)
 }
 
 template <class T,const int MinimumLength,class SizeType>
-inline YSRESULT YsArray <T,MinimumLength,SizeType>::Append(T &&dat)
+inline YSRESULT YsArray <T, MinimumLength, SizeType>::Append(T&& dat)
 {
-	if(&dat<vv || (vv+nv)<=&dat)
+	try
 	{
-		if(Alloc(nv+1,YSTRUE)==YSOK)
-		{
-			vv[nv-1]=(T &&)dat;
-			return YSOK;
-		}
+		vv.push_back((T&&)dat);
 	}
-	else
+	catch (...)
 	{
-		T tmp((T &&)dat);
-		if(Alloc(nv+1,YSTRUE)==YSOK)
-		{
-			vv[nv-1]=(T &&)tmp;
-			return YSOK;
-		}
+		return YSERR;
 	}
-	return YSERR;
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1236,16 +1225,7 @@ inline const T &YsArray<T,MinimumLength,SizeType>::GetTop(void) const
 template <class T,const int MinimumLength,class SizeType>
 inline T &YsArray<T,MinimumLength,SizeType>::GetEnd(void)
 {
-	if(0<nv)
-	{
-		return vv[nv-1];
-	}
-	else
-	{
-		YsErrOut("YsArray::GetEnd()\n  The array is empty.\n");
-		assert(0<nv);
-		return vv[nv-1];
-	}
+	return vv.back();
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1296,7 +1276,7 @@ YSRESULT YsArray <T,MinimumLength,SizeType>::MakeUnitLength(const T &dat)
 template <class T,const int MinimumLength,class SizeType>
 inline SizeType YsArray<T,MinimumLength,SizeType>::GetNumItem(void) const
 {
-	return nv;
+	return vv.size();
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1366,13 +1346,13 @@ inline const T &YsArray<T,MinimumLength,SizeType>::GetCyclic(SizeType idx) const
 template <class T,const int MinimumLength,class SizeType>
 inline const T *YsArray<T,MinimumLength,SizeType>::GetArray(void) const
 {
-	return vv;
+	return vv.data();
 }
 
 template <class T,const int MinimumLength,class SizeType>
 inline T *YsArray<T,MinimumLength,SizeType>::GetEditableArray(void)
 {
-	return vv;
+	return vv.data();
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1712,42 +1692,24 @@ inline YSRESULT YsArray <T,MinimumLength,SizeType>::Shrink(void)
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::YsArray()
 {
-	nv=0;
-	nAvailable=0;
-	vv=NULL;
+	vv = std::vector<T>();
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::YsArray(SizeType nv,const T v[])
 {
-	this->nv=0;
-	this->nAvailable=0;
-	this->vv=NULL;
-	Set(nv,v);
+	vv = std::vector<T>();
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::YsArray(std::nullptr_t,SizeType N)
 {
-	this->nv=0;
-	this->nAvailable=0;
-	this->vv=NULL;
-	AllocWithoutCopy(N);
+	vv = std::vector<T>(N);
 }
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(std::initializer_list <T> initList)
-{
-	this->nv=0;
-	this->nAvailable=0;
-	this->vv=NULL;
-	resize(initList.size());
-	YSSIZE_T idx=0;
-	for(auto &v : initList)
-	{
-		(*this)[idx]=v;
-	}
-}
+YsArray<T,MinimumLength,SizeType>::YsArray(std::initializer_list <T> initList) : vv(initList)
+{}
 
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1755,45 +1717,51 @@ YsArray<T,MinimumLength,SizeType>::YsArray(const YsArray <T,MinimumLength,SizeTy
 {
 	nv=0;
 	nAvailable=0;
-	vv=NULL;
-	Set(from.GetN(),from);
+	vv = std::vector<T>(from.size());
+	for (YSSIZE_T i = 0; i < from.size(); i++)
+	{
+		vv[i] = from[i];
+	}
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::YsArray(const YsConstArrayMask <T> &from)
 {
-	nv=0;
-	nAvailable=0;
-	vv=NULL;
-	Set((SizeType)from.GetN(),from);
+	vv = std::vector<T>(from.GetN());
+	for (YSSIZE_T i = 0; i < from.GetN(); i++)
+	{
+		vv[i] = from[i];
+	}
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength,SizeType> &&incoming)
 {
-	nv=0;
-	nAvailable=0;
-	vv=NULL;
-	MoveFrom(incoming);
+	vv = std::vector<T>(incoming.size());
+	for (YSSIZE_T i = 0; i < incoming.size(); i++)
+	{
+		vv[i] = incoming[i]
+	}
+	incoming.ClearDeep();
 }
 
 template <class T,const int MinimumLength,class SizeType>
 template <const int MinimumLength2,class SizeType2>
 YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength2,SizeType2> &&incoming)
 {
-	nv=0;
-	nAvailable=0;
-	vv=NULL;
-	MoveFrom(incoming);
+	vv = std::vector<T>(incoming.size());
+	for (YSSIZE_T i = 0; i < incoming.size(); i++)
+	{
+		vv[i] = incoming[i]
+	}
+	incoming.ClearDeep();
 }
 
 template <class T,const int MinimumLength,class SizeType>
 template <class StorageClass>
 YsArray<T,MinimumLength,SizeType>::YsArray(const StorageClass &incoming)
 {
-	nv=0;
-	nAvailable=0;
-	vv=NULL;
+	vv = std::vector<T>();
 	for(auto iter=incoming.begin(); iter!=incoming.end(); ++iter)
 	{
 		Append(*iter);
@@ -1802,20 +1770,12 @@ YsArray<T,MinimumLength,SizeType>::YsArray(const StorageClass &incoming)
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::~YsArray()
-{
-	if(vv!=NULL && vv!=Prealloc())
-	{
-		delete [] vv;
-	}
-}
+{}
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(const YsArray <T,MinimumLength,SizeType> &from)
 {
-	if(this->GetArray()!=from.GetArray())
-	{
-		Set(from.GetN(),from.GetArray());
-	}
+	vv = from.vv;
 	return *this;
 }
 
@@ -1826,8 +1786,7 @@ YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::operator
 	CleanUp();
 	for(auto iter=from.begin(); iter!=from.end(); ++iter)
 	{
-		auto &v=*iter;
-		Append(v);
+		Append(*iter);
 	}
 	return *this;
 }
@@ -1839,7 +1798,8 @@ YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=
 	YSSIZE_T idx=0;
 	for(auto &v : initList)
 	{
-		(*this)[idx]=v;
+		vv[idx]=v;
+		idx++;
 	}
 	return *this;
 }
@@ -1847,9 +1807,10 @@ YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(const YsConstArrayMask <T> &from)
 {
-	if(this->GetArray()!=from.GetArray())
+	CleanUp();
+	for (YSSIZE_T i = 0; i < from.GetN(); i++)
 	{
-		Set((SizeType)from.GetN(),from.GetArray());
+		vv[i] = from[i];
 	}
 	return *this;
 }
@@ -1858,10 +1819,9 @@ YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(YsArray <T,MinimumLength,SizeType> &&incoming)
 {
-	if(this->GetArray()!=incoming.GetArray())
-	{
-		MoveFrom(incoming);
-	}
+	vv = incoming.vv;
+	incoming.CleanUp();
+
 	return *this;
 }
 
@@ -1869,10 +1829,9 @@ template <class T,const int MinimumLength,class SizeType>
 template <const int MinimumLength2,class SizeType2>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(YsArray <T,MinimumLength2,SizeType2> &&incoming)
 {
-	if(this->GetArray()!=incoming.GetArray())
-	{
-		MoveFrom(incoming);
-	}
+	vv = incoming.vv;
+	incoming.CleanUp();
+
 	return *this;
 }
 
@@ -1880,48 +1839,35 @@ YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Set(const T &v)
 {
-	return Set(1,&v);
+	vv.clear();
+	vv.push_back(v);
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Set(SizeType NV,const T V[])
 {
-	if(NV==0)
+	try
 	{
-		if(nAvailable>MinimumLength*2)
+		if (NV == 0)
 		{
-			if(vv!=NULL && vv!=Prealloc())
-			{
-				delete [] vv;
-			}
-			nv=0;
-			vv=NULL;
-			nAvailable=0;
-		}
-		else
-		{
-			nv=0;
-		}
-		return YSOK;
-	}
-	else
-	{
-		if(Alloc(NV,YSFALSE)==YSOK)
-		{
-			if(V!=NULL)
-			{
-				for(SizeType i=0; i<NV; i++)
-				{
-					vv[i]=V[i]; // 2014/09/26 Serious error was in here.  V[i] was casted to (T &&), although T is const.
-				}
-			}
+			vv.clear();
 			return YSOK;
 		}
 		else
 		{
-			YsErrOut("YsArray::Set()\n  Low Memory Warning!!\n");
-			return YSERR;
+			if (V != NULL)
+			{
+				for (SizeType i = 0; i < NV; i++)
+				{
+					vv[i] = V[i]; // 2014/09/26 Serious error was in here.  V[i] was casted to (T &&), although T is const.
+				}
+			}
+			return YSOK;
 		}
+	}
+	catch (...)
+	{
+		return YSERR;
 	}
 }
 
@@ -1931,14 +1877,13 @@ YsArray<T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(
 	SizeType nItem;
 	const YsList <T> *seeker;
 
-	nItem=from->GetNumObject();
+	nItem = from->GetNumObject();
 	if(Alloc(nItem,YSFALSE)==YSOK)
 	{
-		SizeType i;
-		for(i=0; i<nItem; i++)
+		for(SizeTypei = 0; i < nItem; i++)
 		{
-			seeker=from->Seek(i);
-			vv[i]=seeker->dat;
+			seeker = from->Seek(i);
+			vv[i] = seeker->dat;
 		}
 	}
 	else
@@ -1952,55 +1897,40 @@ template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> YsArray<T,MinimumLength,SizeType>::operator+(const YsConstArrayMask <T> &toAdd) const
 {
 	YsArray <T,MinimumLength,SizeType> sum;
-	sum.resize(this->size()+toAdd.size());
-	for(YSSIZE_T idx=0; idx<this->size(); ++idx)
+	sum.resize(this->size() + toAdd.size());
+	for(YSSIZE_T idx = 0; idx < this->size(); ++idx)
 	{
-		sum[idx]=(*this)[idx];
+		sum[idx] = vv[idx];
 	}
-	auto base=this->size();
-	for(YSSIZE_T idx=0; idx<toAdd.size(); ++idx)
+	auto base = this->size();
+	for(YSSIZE_T idx = 0; idx < toAdd.size(); ++idx)
 	{
-		sum[base+idx]=toAdd[idx];
+		sum[base + idx] = toAdd[idx];
 	}
 	return sum;
 }
 
+
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::CopyFrom(const YsConstArrayMask <T> &from)
 {
-	if(from.data()!=this->data())
+	for (SizeType i = 0; i < from.size(); i++)
 	{
-		this->Set(from.size(),from.data());
+		vv[i] = from[i];
 	}
+
 	return *this;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::MoveFrom(YsArray <T,MinimumLength,SizeType> &incoming)
 {
-	if(incoming.vv!=incoming.Prealloc())
+	for (YSSIZE_T idx = 0; idx < incoming.GetN(); ++idx)
 	{
-		if(NULL!=this->vv && this->vv!=this->Prealloc())
-		{
-			delete [] this->vv;
-		}
-		this->vv=incoming.vv;
-		this->nv=incoming.nv;
-		this->nAvailable=incoming.nAvailable;
+		vv[idx] = (T&&)(incoming[idx]);
+	}
+	incoming.CleanUp();
 
-		incoming.nv=0;
-		incoming.nAvailable=0;
-		incoming.vv=NULL;
-	}
-	else
-	{
-		this->Set(incoming.GetN(),NULL);
-		for(YSSIZE_T idx=0; idx<incoming.GetN(); ++idx)
-		{
-			(*this)[idx]=(T &&)(incoming[idx]);
-		}
-		incoming.CleanUp();
-	}
 	return *this;
 }
 
@@ -2009,94 +1939,64 @@ template <class T,const int MinimumLength,class SizeType>
 template <const int MinimumLength2,class SizeType2>
 YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::MoveFrom(YsArray <T,MinimumLength2,SizeType2> &incoming)
 {
-	T *toMove;
-	SizeType2 nv,nAvailable;
-	if(MinimumLength<incoming.GetN() &&
-	   NULL!=(toMove=incoming.DetachPointer_InternalUseOnlyDontUseItFromOutsideYsArrayClass(nv,nAvailable)))
+	for (YSSIZE_T idx = 0; idx < incoming.GetN(); ++idx)
 	{
-		if(NULL!=this->vv && this->vv!=this->Prealloc())
-		{
-			delete [] this->vv;
-		}
-		this->vv=toMove;
-		this->nv=(SizeType)nv;
-		this->nAvailable=(SizeType)nAvailable;
+		vv[idx] = (T&&)(incoming[idx]);
 	}
-	else
-	{
-		this->Set((SizeType)incoming.GetN(),NULL);
-		for(YSSIZE_T idx=0; idx<incoming.GetN(); ++idx)
-		{
-			(*this)[idx]=(T &&)(incoming[idx]);
-		}
-	}
+	incoming.CleanUp();
+
 	return *this;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Resize(SizeType neoSize)
 {
-	return Alloc(neoSize,YSTRUE);
+	try
+	{
+		vv.resize(neoSize);
+		return YSOK;
+	}
+	catch (...)
+	{
+		return YSERR;
+	}
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::ResizeNoCopy(SizeType newSize)
 {
-	return AllocWithoutCopy(newSize);
+	return Resize(newSize);
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::AppendItem(const T &dat)
 {
-	if(&dat<vv || (vv+nv)<=&dat)
+	try
 	{
-		if(Alloc(nv+1,YSTRUE)==YSOK)
-		{
-			vv[nv-1]=dat;
-			return YSOK;
-		}
+		vv.push_back(dat);
 	}
-	else // Self-copy case
+	catch (...)
 	{
-		SizeType srcIdx=(SizeType)((&dat)-vv);
-		if(Alloc(nv+1,YSTRUE)==YSOK)
-		{
-			vv[nv-1]=vv[srcIdx];
-			return YSOK;
-		}
+		return YSERR;
 	}
-	return YSERR;
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Add(SizeType nItm,const T itm[])
 {
-	if(itm<vv || (vv+nv)<=itm)
+	try
 	{
-		SizeType cpyTop=nv;
-		if(Alloc(nv+nItm,YSTRUE)==YSOK)
+		for (SizeType i = 0; i < nItm; i++)
 		{
-			for(SizeType i=0; i<nItm; i++)
-			{
-				vv[cpyTop+i]=itm[i];
-			}
-			return YSOK;
+			vv.push_back(itm[i]);
 		}
 	}
-	else // Self copy
+	catch (...)
 	{
-		SizeType srcIdx=(SizeType)(itm-vv);
-		SizeType cpyTop=nv;
-		if(Alloc(nv+nItm,YSTRUE)==YSOK)
-		{
-			for(SizeType i=0; i<nItm; i++)
-			{
-				vv[cpyTop+i]=vv[srcIdx+i];
-			}
-			return YSOK;
-		}
+		return YSERR;
 	}
-	return YSERR;
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -2122,13 +2022,7 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::Delete(SizeType id)
 {
 	if(0<=id && id<nv)
 	{
-		SizeType i;
-		for(i=id; i<nv-1; i++)
-		{
-			vv[i]=(T &&)vv[i+1];
-		}
-		nv--;
-		Shrink();
+		vv.erase(vv.begin() + id);
 		return YSOK;
 	}
 	return YSERR;
@@ -2137,17 +2031,13 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::Delete(SizeType id)
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray <T,MinimumLength,SizeType>::Delete(SizeType idFrom,SizeType numItem)
 {
-	if(GetN()<=idFrom+numItem)
+	if(GetN() <= idFrom + numItem)
 	{
 		Resize(idFrom);
 	}
 	else
 	{
-		SizeType i;
-		for(i=idFrom; i+numItem<GetN(); i++)
-		{
-			vv[i]=vv[i+numItem];
-		}
+		vv.erase(vv.begin() + idFrom, vv.begin() + idFrom + numItem);
 		Resize(GetN()-numItem);
 	}
 	return YSOK;
@@ -2156,25 +2046,29 @@ YSRESULT YsArray <T,MinimumLength,SizeType>::Delete(SizeType idFrom,SizeType num
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray <T,MinimumLength,SizeType>::Invert(void)
 {
-	SizeType i;
-	for(i=0; i<nv/2; i++)
+	try
 	{
-		T a;
-		a=vv[i];
-		vv[i]=vv[nv-1-i];
-		vv[nv-1-i]=a;
+		std::reverse(vv.begin(), vv.end());
+		return YSOK;
 	}
-	return YSOK;
+	catch (...)
+	{
+		return YSERR;
+	}
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray <T,MinimumLength,SizeType>::Swap(SizeType a,SizeType b)
 {
-	T swp;
-	swp=vv[a];
-	vv[a]=vv[b];
-	vv[b]=swp;
-	return YSOK;
+	try
+	{
+		std::swap(vv[a], vv[b]);
+		return YSOK;
+	}
+	catch (...)
+	{
+		return YSERR;
+	}
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -2197,14 +2091,15 @@ T *YsArray <T,MinimumLength,SizeType>::DetachPointer_InternalUseOnlyDontUseItFro
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::DeleteBySwapping(YSSIZE_T id)
 {
-	if(0<=id && id<nv)
+	try
 	{
-		vv[id]=(T &&)vv[nv-1];
-		--nv;
-		Shrink();
-		return YSOK;
+		vv.erase(vv.begin() + id);
 	}
-	return YSERR;
+	catch (...)
+	{
+		return YSERR;
+	}
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -2215,11 +2110,8 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::DeleteItemBySwapping(const T &incomi
 	{
 		if(vv[idx]==incoming)
 		{
+			vv.erase(vv.begin() + idx);
 			--newSize;
-			if(idx!=newSize)
-			{
-				vv[idx]=(T &&)vv[newSize];
-			}
 		}
 	}
 	if(GetN()!=newSize)
@@ -2233,83 +2125,78 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::DeleteItemBySwapping(const T &incomi
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::DeleteItem(const T &incoming)
 {
-	auto newSize=GetN();
-	for(auto idx=GetN()-1; 0<=idx; --idx)
-	{
-		if(vv[idx]==incoming)
-		{
-			--newSize;
-			for(auto i=idx; i<newSize; ++i)
-			{
-				vv[i]=(T &&)vv[i+1];
-			}
-		}
-	}
-	if(GetN()!=newSize)
-	{
-		Resize(newSize);
-		return YSOK;
-	}
-	return YSERR;
+	return DeleteItemBySwapping(incoming);
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::DeleteLast(void)
 {
-	if(nv>0)
+	try
 	{
-		--nv;
-		Shrink();
-		return YSOK;
+		vv.pop_back();
 	}
-	return YSERR;
+	catch (...)
+	{
+		return YSERR;
+	}
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Increment(void)
 {
-	return Alloc(GetN()+1,YSTRUE);
+	try
+	{
+		vv.reserve(vv.size() + 1);
+	}
+	catch (...)
+	{
+		return YSERR;
+	}
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Clear(void)
 {
-	return Set(0,NULL);
+	vv.clear();
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::CleanUp(void)
 {
-	return Set(0,NULL);
+	vv.clear();
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::ClearDeep(void)
 {
-	if(NULL!=vv && Prealloc()!=vv)
+	try
 	{
-		delete [] vv;
+		vv.clear();
+		vv.shrink_to_fit();
 	}
-	nv=0;
-	nAvailable=0;
-	vv=NULL;
+	catch (...)
+	{
+		return YSERR;
+	}
 	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Insert(SizeType id,const T &dat)
 {
-	if(0<=id && id<=nv && Alloc(nv+1,YSTRUE)==YSOK)
+	try
 	{
-		SizeType i;
-		for(i=nv-1; i>id; i--)
-		{
-			vv[i]=(T &&)vv[i-1];
-		}
-		vv[id]=dat;
-		return YSOK;
+		vv.insert(vv.begin() + id, dat);
 	}
-	return YSERR;
+	catch (...)
+	{
+		return YSERR;
+	}
+	return YSOK;
 }
 
 /*! Compare operator that compares two YsArray objects.  Compare operator (operator==) must be
