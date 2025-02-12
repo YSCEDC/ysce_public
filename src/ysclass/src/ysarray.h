@@ -48,21 +48,21 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*! This function returns an item in a cyclic array. */
 template <class T>
-T &YsGetCyclic(YSSIZE_T n,T ary[],YSSIZE_T idx)
+T& YsGetCyclic(YSSIZE_T n, T ary[], YSSIZE_T idx)
 {
-	if(0<n)
+	if (0 < n)
 	{
 		// By the way, is it guaranteed that (-3)%7 is always -3, not 4?  Common sense tells it is -3, but I'm not sure if it was a guaranteed behavior in C++.
-		idx=idx%n;
-		if(0>idx)
+		idx = idx % n;
+		if (0 > idx)
 		{
-			idx+=n;
+			idx += n;
 		}
 		return ary[idx];
 	}
 	else
 	{
-		T *ptr=NULL;
+		T* ptr = NULL;
 		return *ptr;
 	}
 }
@@ -1246,12 +1246,12 @@ inline const T &YsArray <T,MinimumLength,SizeType>::Last(void) const
 	return GetEnd();
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline YSRESULT YsArray<T,MinimumLength,SizeType>::SetItem(SizeType idx,const T &v)
+template <class T, const int MinimumLength, class SizeType>
+inline YSRESULT YsArray<T, MinimumLength, SizeType>::SetItem(SizeType idx, const T& v)
 {
-	if(0<=idx && idx<nv)
+	if (0 <= idx && idx < vv.size())
 	{
-		vv[idx]=v;
+		vv[idx] = v;
 		return YSOK;
 	}
 	return YSERR;
@@ -1279,30 +1279,30 @@ inline SizeType YsArray<T,MinimumLength,SizeType>::GetNumItem(void) const
 	return vv.size();
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline const T &YsArray<T,MinimumLength,SizeType>::v(SizeType i) const
+template <class T, const int MinimumLength, class SizeType>
+inline const T& YsArray<T, MinimumLength, SizeType>::v(SizeType i) const
 {
-	if(0<=i && i<nv)
+	if (0 <= i && i < vv.size())
 	{
 		return vv[i];
 	}
 	else
 	{
 		YsErrOut("YsArray::v()\n  Array Subscript Exceeded\n");
-		assert(0<=i && i<nv);
+		assert(0 <= i && i < vv.size());
 		return vv[i];
 	}
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline T &YsArray<T,MinimumLength,SizeType>::GetEditableItem(SizeType i)
+template <class T, const int MinimumLength, class SizeType>
+inline T& YsArray<T, MinimumLength, SizeType>::GetEditableItem(SizeType i)
 {
-	if(0<=i && i<nv)
+	if (0 <= i && i < vv.size())
 	{
 		return vv[i];
 	}
 	YsErrOut("YsArray::GetEditableItem()\n  Array Subscript Exceeded\n");
-	assert(0<=i && i<nv);
+	assert(0 <= i && i < vv.size());
 	return vv[i];
 }
 
@@ -1315,19 +1315,19 @@ inline const T &YsArray<T,MinimumLength,SizeType>::GetItem(SizeType i) const
 template <class T,const int MinimumLength,class SizeType>
 inline T &YsArray<T,MinimumLength,SizeType>::GetCyclic(SizeType idx)
 {
-	return YsGetCyclic(nv,vv,idx);
+	return YsGetCyclic(vv.size(), vv.data(), idx);
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline SizeType YsArray<T,MinimumLength,SizeType>::GetCyclicIndex(SizeType idx) const
+template <class T, const int MinimumLength, class SizeType>
+inline SizeType YsArray<T, MinimumLength, SizeType>::GetCyclicIndex(SizeType idx) const
 {
-	if(0<size())
+	if (0 < size())
 	{
 		// By the way, is it guaranteed that (-3)%7 is always -3, not 4?  Common sense tells it is -3, but I'm not sure if it was a guaranteed behavior in C++.
-		idx=idx%size();
-		if(0>idx)
+		idx = idx % size();
+		if (0 > idx)
 		{
-			idx+=size();
+			idx += size();
 		}
 		return idx;
 	}
@@ -1337,81 +1337,81 @@ inline SizeType YsArray<T,MinimumLength,SizeType>::GetCyclicIndex(SizeType idx) 
 	}
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline const T &YsArray<T,MinimumLength,SizeType>::GetCyclic(SizeType idx) const
+template <class T, const int MinimumLength, class SizeType>
+inline const T& YsArray<T, MinimumLength, SizeType>::GetCyclic(SizeType idx) const
 {
-	return YsGetCyclic(nv,vv,idx);
+	return YsGetCyclic(vv.size(), vv.data(), idx);
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline const T *YsArray<T,MinimumLength,SizeType>::GetArray(void) const
+template <class T, const int MinimumLength, class SizeType>
+inline const T* YsArray<T, MinimumLength, SizeType>::GetArray(void) const
 {
 	return vv.data();
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline T *YsArray<T,MinimumLength,SizeType>::GetEditableArray(void)
+template <class T, const int MinimumLength, class SizeType>
+inline T* YsArray<T, MinimumLength, SizeType>::GetEditableArray(void)
 {
 	return vv.data();
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline T &YsArray<T,MinimumLength,SizeType>::GetEditableTopItem(void)
+template <class T, const int MinimumLength, class SizeType>
+inline T& YsArray<T, MinimumLength, SizeType>::GetEditableTopItem(void)
 {
-	if(0<nv)
+	if (0 < vv.size())
 	{
 		return vv[0];
 	}
 	else
 	{
 		YsErrOut("YsArray::GetEditableTopItem()\n  The array is empty.\n");
-		assert(0<nv);
+		assert(0 < vv, size());
 		return vv[0];
 	}
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline const T &YsArray<T,MinimumLength,SizeType>::GetTopItem(void) const
+template <class T, const int MinimumLength, class SizeType>
+inline const T& YsArray<T, MinimumLength, SizeType>::GetTopItem(void) const
 {
-	if(0<nv)
+	if (0 < vv.size())
 	{
 		return vv[0];
 	}
 	else
 	{
 		YsErrOut("YsArray::GetTopItem()\n  The array is empty.\n");
-		assert(0<nv);
+		assert(0 < vv.size());
 		return vv[0];
 	}
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline T &YsArray<T,MinimumLength,SizeType>::GetEditableEndItem(void)
+template <class T, const int MinimumLength, class SizeType>
+inline T& YsArray<T, MinimumLength, SizeType>::GetEditableEndItem(void)
 {
-	if(0<nv)
+	if (0 < vv.size())
 	{
-		return vv[nv-1];
+		return vv[vv.size() - 1];
 	}
 	else
 	{
 		YsErrOut("YsArray::GetEditableEndItem()\n  The array is empty.\n");
-		assert(0<nv);
-		return vv[nv-1];
+		assert(0 < vv.size());
+		return vv[vv.size() - 1];
 	}
 }
 
-template <class T,const int MinimumLength,class SizeType>
-inline const T &YsArray<T,MinimumLength,SizeType>::GetEndItem(void) const
+template <class T, const int MinimumLength, class SizeType>
+inline const T& YsArray<T, MinimumLength, SizeType>::GetEndItem(void) const
 {
-	if(0<nv)
+	if (0 < vv.size())
 	{
-		return vv[nv-1];
+		return vv[vv.size() - 1];
 	}
 	else
 	{
 		YsErrOut("YsArray::GetEndItem()\n  The array is empty.\n");
-		assert(0<nv);
-		return vv[nv-1];
+		assert(0 < vv.size());
+		return vv[vv.size() - 1];
 	}
 }
 
@@ -1419,20 +1419,20 @@ inline const T &YsArray<T,MinimumLength,SizeType>::GetEndItem(void) const
 template <class T,const int MinimumLength,class SizeType>
 inline SizeType YsArray <T,MinimumLength,SizeType>::GetNAvailable(void) const
 {
-	return nAvailable;
+	return vv.capacity() - vv.size();
 }
 
 
 template <class T,const int MinimumLength,class SizeType>
 inline SizeType YsArray <T,MinimumLength,SizeType>::GetNUnused(void) const
 {
-	if(nAvailable==0)
+	if(vv.capacity() - vv.size() == 0)
 	{
-		return MinimumLength-nv;
+		return MinimumLength - vv.size();
 	}
 	else
 	{
-		return nAvailable-nv;
+		return vv.capacity() - vv.size();
 	}
 }
 
@@ -1488,203 +1488,38 @@ inline YSBOOL YsArray<T,MinimumLength,SizeType>::HasCommonItem(const S &from) co
 }
 
 // \cond
-template <class T,const int MinimumLength,class SizeType>
-inline YSRESULT YsArray<T,MinimumLength,SizeType>::Alloc(SizeType n,YSBOOL cpy)
+template <class T, const int MinimumLength, class SizeType>
+inline YSRESULT YsArray<T, MinimumLength, SizeType>::Alloc(SizeType n, YSBOOL cpy)
 {
-	if(n<=nAvailable)
+	try
 	{
-		nv=n;
-		return YSOK;
+		vv.reserve(n);
 	}
-	else if(/* nAvailable<n && */ n<=MinimumLength)
+	catch (...)
 	{
-		if(vv==Prealloc())
-		{
-			// Nothing to do
-		}
-		else /* if(vv!=Prealloc()) */
-		{
-			if(cpy==YSTRUE && nv>0)
-			{
-				SizeType i;
-				for(i=0; i<nv; i++)
-				{
-					Prealloc()[i]=(T &&)vv[i];
-				}
-			}
-			if(vv!=NULL)
-			{
-				delete [] vv;
-			}
-		}
-		nv=n;
-		vv=Prealloc();
-		nAvailable=0;
-		return YSOK;
+		return YSERR;
 	}
-	else
-	{
-		T *neo;
-		SizeType toAlloc;
-
-		toAlloc=YsGreater <SizeType> ((MinimumLength>0 ? MinimumLength*2 : 1),nAvailable*2);
-		while(toAlloc<n)
-		{
-			toAlloc=toAlloc*2;
-			if(toAlloc<0) // Overflow
-			{
-				goto INTOVERFLOW;
-			}
-		}
-		neo=new T [toAlloc];
-		if(neo!=NULL)
-		{
-			if(cpy==YSTRUE && nv>0)    // nv==0 -> don't have to copy
-			{
-				SizeType i;
-				for(i=0; i<nv; i++)
-				{
-					neo[i]=(T &&)vv[i];
-				}
-			}
-			if(vv!=NULL && vv!=Prealloc())
-			{
-				delete [] vv;
-			}
-			nv=n;
-			vv=neo;
-			nAvailable=toAlloc;
-			return YSOK;
-		}
-		else
-		{
-			goto OUTOFMEM;
-		}
-// Will never fall into this place
-	}
-// Will never fall into this place
-
-OUTOFMEM:
-	YsExceptionHandler::Exception(YsExceptionHandler::OUTOFMEMORY,"YsArray::Alloc()");
-	YsErrOut("YsArray::Alloc()\n");
-	YsErrOut("  Out of memory!!!\n");
-	return YSERR;
-
-INTOVERFLOW:
-	YsErrOut("YsArray::Alloc()\n");
-	YsErrOut("  Integer Overflow!!!\n");
-	return YSERR;
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 inline YSRESULT YsArray<T,MinimumLength,SizeType>::AllocWithoutCopy(SizeType n)
 {
-	if(n<=nAvailable)
+	try
 	{
-		nv=n;
-		return YSOK;
+		vv.clear();
+		vv.reserve(n);
 	}
-	else if(/* nAvailable<n && */ n<=MinimumLength)
+	catch (...)
 	{
-		if(vv!=Prealloc() && vv!=NULL)
-		{
-			delete [] vv;
-		}
-		nv=n;
-		vv=Prealloc();
-		nAvailable=0;
-		return YSOK;
+		return YSERR;
 	}
-	else
-	{
-		T *neo;
-		SizeType toAlloc;
-
-		toAlloc=YsGreater <SizeType> ((MinimumLength>0 ? MinimumLength*2 : 1),nAvailable*2);
-		while(toAlloc<n)
-		{
-			toAlloc=toAlloc*2;
-			if(toAlloc<0) // Overflow
-			{
-				goto INTOVERFLOW;
-			}
-		}
-		neo=new T [toAlloc];
-		if(neo!=NULL)
-		{
-			if(vv!=NULL && vv!=Prealloc())
-			{
-				delete [] vv;
-			}
-			nv=n;
-			vv=neo;
-			nAvailable=toAlloc;
-			return YSOK;
-		}
-		else
-		{
-			goto OUTOFMEM;
-		}
-// Will never fall into this place
-	}
-// Will never fall into this place
-
-OUTOFMEM:
-	YsExceptionHandler::Exception(YsExceptionHandler::OUTOFMEMORY,"YsArray::Alloc()");
-	YsErrOut("YsArray::Alloc()\n");
-	YsErrOut("  Out of memory!!!\n");
-	return YSERR;
-
-INTOVERFLOW:
-	YsErrOut("YsArray::Alloc()\n");
-	YsErrOut("  Integer Overflow!!!\n");
-	return YSERR;
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
 inline YSRESULT YsArray <T,MinimumLength,SizeType>::Shrink(void)
 {
-	SizeType i;
-	if(vv!=NULL && vv!=Prealloc() && (nv<nAvailable/2 || nv<=MinimumLength))
-	// Condition: nv<=MinimumLength is added on 02/11/2006
-	{
-		if(nv<=MinimumLength)
-		{
-			for(i=0; i<nv; i++)
-			{
-				Prealloc()[i]=(T &&)vv[i];
-			}
-			delete [] vv;
-			vv=Prealloc();
-			nAvailable=0;
-		}
-		else
-		{
-			SizeType newSize;
-			T *newArray;
-			newSize=nAvailable/2;
-			while(newSize>MinimumLength*2 && newSize>nv*2)
-			{
-				newSize/=2;
-			}
-			newArray=new T [newSize];
-			if(newArray!=NULL)
-			{
-				for(i=0; i<nv; i++)
-				{
-					newArray[i]=(T &&)vv[i];
-				}
-				delete [] vv;
-				vv=newArray;
-				nAvailable=newSize;
-			}
-			else
-			{
-				YsExceptionHandler::Exception(YsExceptionHandler::OUTOFMEMORY,"YsArray::Shrink()");
-				return YSERR;
-			}
-		}
-	}
 	return YSOK;
 }
 // \endcond
@@ -1715,8 +1550,6 @@ YsArray<T,MinimumLength,SizeType>::YsArray(std::initializer_list <T> initList) :
 template <class T,const int MinimumLength,class SizeType>
 YsArray<T,MinimumLength,SizeType>::YsArray(const YsArray <T,MinimumLength,SizeType> &from)
 {
-	nv=0;
-	nAvailable=0;
 	vv = std::vector<T>(from.size());
 	for (YSSIZE_T i = 0; i < from.size(); i++)
 	{
@@ -1740,7 +1573,7 @@ YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength,SizeType> &&
 	vv = std::vector<T>(incoming.size());
 	for (YSSIZE_T i = 0; i < incoming.size(); i++)
 	{
-		vv[i] = incoming[i]
+		vv[i] = incoming[i];
 	}
 	incoming.ClearDeep();
 }
@@ -1839,8 +1672,17 @@ YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Set(const T &v)
 {
-	vv.clear();
-	vv.push_back(v);
+	try
+	{
+		vv.clear();
+		vv.push_back(v);
+	}
+	catch (...)
+	{
+		return YSERR;
+	}
+
+	return YSOK;
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -2017,10 +1859,10 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::Append(const YsConstArrayMask <T> &a
 	return Add((SizeType)ary.GetN(),ary.GetArray());
 }
 
-template <class T,const int MinimumLength,class SizeType>
-YSRESULT YsArray<T,MinimumLength,SizeType>::Delete(SizeType id)
+template <class T, const int MinimumLength, class SizeType>
+YSRESULT YsArray<T, MinimumLength, SizeType>::Delete(SizeType id)
 {
-	if(0<=id && id<nv)
+	if (0 <= id && id < vv.size())
 	{
 		vv.erase(vv.begin() + id);
 		return YSOK;
@@ -2076,12 +1918,7 @@ T *YsArray <T,MinimumLength,SizeType>::DetachPointer_InternalUseOnlyDontUseItFro
 {
 	if(vv!=Prealloc())
 	{
-		T *retPtr=vv;
-		nv=this->nv;
-		nAvailable=this->nAvailable;
-
-		this->nv=0;
-		this->nAvailable=0;
+		T *retPtr=vv.data();
 		this->vv=NULL;
 		return retPtr;
 	}

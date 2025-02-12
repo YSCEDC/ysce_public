@@ -764,7 +764,7 @@ public:
 	/*! For better interoperability with STL */
 	inline CHARTYPE front(void) const
 	{
-		return (*this)[0];
+		return vv[0];
 	}
 	/*! For better interoperability with STL */
 	inline CHARTYPE back(void) const
@@ -779,13 +779,13 @@ public:
 	/*! For better interoperability with STL */
 	inline void resize(YSSIZE_T n,CHARTYPE c=' ')
 	{
-		if(n<Strlen())
+		if(n < Strlen())
 		{
 			SetLength(n);
 		}
 		else
 		{
-			Append(c,n-Strlen());
+			Append(c, n - Strlen());
 		}
 	}
 	/*! For better interoperability with STL */
@@ -884,25 +884,25 @@ template <class CHARTYPE>
 /* static */ int YsGenericString<CHARTYPE>::STRCMP(const CHARTYPE str1[],const CHARTYPE str2[])
 {
 	YSSIZE_T i;
-	CHARTYPE c1=0,c2=0;
-	for(i=0; 0!=str1[i] && 0!=str2[i]; i++)
+	CHARTYPE c1 = 0,c2 = 0;
+	for(i = 0; 0 != str1[i] && 0 != str2[i]; i++)
 	{
-		c1=str1[i];
-		c2=str2[i];
-		if('a'<=c1 && c1<='z')
+		c1 = str1[i];
+		c2 = str2[i];
+		if('a' <= c1 && c1 <= 'z')
 		{
-			c1=c1-'a'+'A';
+			c1 = c1 - 'a' + 'A';
 		}
-		if('a'<=c2 && c2<='z')
+		if('a' <= c2 && c2 <= 'z')
 		{
-			c2=c2-'a'+'A';
+			c2 = c2- 'a' + 'A';
 		}
-		if(c1!=c2)
+		if(c1 != c2)
 		{
-			return c1-c2;
+			return c1 - c2;
 		}
 	}
-	return str1[i]-str2[i];
+	return str1[i] - str2[i];
 }
 
 template <class CHARTYPE>
@@ -914,15 +914,15 @@ inline int YsGenericString<CHARTYPE>::STRCMP(const CHARTYPE compareWith[]) const
 template <class CHARTYPE>
 inline YSBOOL YsGenericString<CHARTYPE>::DoesStartWith(const CHARTYPE compareWith[]) const
 {
-	const YSSIZE_T rStrlen=Strlen(compareWith);
-	if(Strlen()<rStrlen)
+	const YSSIZE_T rStrlen = Strlen(compareWith);
+	if(Strlen() < rStrlen)
 	{
 		return YSFALSE;
 	}
 
-	for(YSSIZE_T idx=0; idx<rStrlen; ++idx)
+	for(YSSIZE_T idx = 0; idx < rStrlen; ++idx)
 	{
-		if((*this)[idx]!=compareWith[idx])
+		if(vv[idx] != compareWith[idx])
 		{
 			return YSFALSE;
 		}
@@ -934,16 +934,16 @@ inline YSBOOL YsGenericString<CHARTYPE>::DoesStartWith(const CHARTYPE compareWit
 template <class CHARTYPE>
 inline YSBOOL YsGenericString<CHARTYPE>::DoesEndWith(const CHARTYPE compareWith[]) const
 {
-	const YSSIZE_T lStrlen=Strlen();
-	const YSSIZE_T rStrlen=Strlen(compareWith);
-	if(lStrlen<rStrlen)
+	const YSSIZE_T lStrlen = Strlen();
+	const YSSIZE_T rStrlen = Strlen(compareWith);
+	if(lStrlen < rStrlen)
 	{
 		return YSFALSE;
 	}
 
-	for(YSSIZE_T idx=0; idx<rStrlen; ++idx)
+	for(YSSIZE_T idx = 0; idx < rStrlen; ++idx)
 	{
-		if((*this)[lStrlen-rStrlen+idx]!=compareWith[idx])
+		if(vv[lStrlen - rStrlen + idx] != compareWith[idx])
 		{
 			return YSFALSE;
 		}
@@ -955,15 +955,15 @@ inline YSBOOL YsGenericString<CHARTYPE>::DoesEndWith(const CHARTYPE compareWith[
 template <class CHARTYPE>
 inline YSBOOL YsGenericString<CHARTYPE>::DOESSTARTWITH(const CHARTYPE compareWith[]) const
 {
-	const YSSIZE_T rStrlen=Strlen(compareWith);
-	if(Strlen()<rStrlen)
+	const YSSIZE_T rStrlen = Strlen(compareWith);
+	if(Strlen() < rStrlen)
 	{
 		return YSFALSE;
 	}
 
 	for(YSSIZE_T idx=0; idx<rStrlen; ++idx)
 	{
-		if(0!=CHARCMP((*this)[idx],compareWith[idx]))
+		if(0 != CHARCMP(vv[idx], compareWith[idx]))
 		{
 			return YSFALSE;
 		}
@@ -975,16 +975,16 @@ inline YSBOOL YsGenericString<CHARTYPE>::DOESSTARTWITH(const CHARTYPE compareWit
 template <class CHARTYPE>
 inline YSBOOL YsGenericString<CHARTYPE>::DOESENDWITH(const CHARTYPE compareWith[]) const
 {
-	const YSSIZE_T lStrlen=Strlen();
-	const YSSIZE_T rStrlen=Strlen(compareWith);
-	if(lStrlen<rStrlen)
+	const YSSIZE_T lStrlen = Strlen();
+	const YSSIZE_T rStrlen = Strlen(compareWith);
+	if(lStrlen < rStrlen)
 	{
 		return YSFALSE;
 	}
 
-	for(YSSIZE_T idx=0; idx<rStrlen; ++idx)
+	for(YSSIZE_T idx = 0; idx < rStrlen; ++idx)
 	{
-		if(0!=CHARCMP((*this)[lStrlen-rStrlen+idx],compareWith[idx]))
+		if(0!=CHARCMP(vv[lStrlen - rStrlen + idx], compareWith[idx]))
 		{
 			return YSFALSE;
 		}
@@ -997,19 +997,19 @@ template <class CHARTYPE>
 inline YSSIZE_T YsGenericString <CHARTYPE>::Strlen(const CHARTYPE str[])
 {
 	YSSIZE_T i;
-	for(i=0; 0!=str[i]; i+=4)
+	for(i = 0; 0 != str[i]; i += 4)
 	{
-		if(0==str[i+1])  // I don't know this classis loop-expansion technique does any performance improvement though.
+		if(0 == str[i + 1])  // I don't know this classis loop-expansion technique does any performance improvement though.
 		{
-			return i+1;
+			return i + 1;
 		}
-		else if(0==str[i+2])
+		else if(0 == str[i + 2])
 		{
-			return i+2;
+			return i + 2;
 		}
-		else if(0==str[i+3])
+		else if(0 == str[i + 3])
 		{
-			return i+3;
+			return i + 3;
 		}
 	}
 	return i;
@@ -1019,20 +1019,20 @@ template <class CHARTYPE>
 inline int YsGenericString <CHARTYPE>::Strcmp(const CHARTYPE str1[],const CHARTYPE str2[])
 {
 	YSSIZE_T i;
-	for(i=0; 0!=str1[i] && 0!=str2[i] && str1[i]==str2[i]; i++)
+	for(i = 0; 0 != str1[i] && 0 != str2[i] && str1[i] == str2[i]; i++)
 	{
 	}
-	return (int)str1[i]-(int)str2[i];
+	return (int)str1[i] - (int)str2[i];
 }
 
 template <class CHARTYPE>
-inline int YsGenericString <CHARTYPE>::Strncmp(const CHARTYPE str1[],const CHARTYPE str2[],YSSIZE_T n)
+inline int YsGenericString <CHARTYPE>::Strncmp(const CHARTYPE str1[], const CHARTYPE str2[], YSSIZE_T n)
 {
 	YSSIZE_T i;
-	for(i=0; i<n && 0!=str1[i] && 0!=str2[i] && str1[i]==str2[i]; i++)
+	for (i = 0; i < n && 0 != str1[i] && 0 != str2[i] && str1[i] == str2[i]; i++)
 	{
 	}
-	return (i==n ? 0 : (int)str1[i]-(int)str2[i]);
+	return (i == n ? 0 : (int)str1[i] - (int)str2[i]);
 }
 
 template <class CHARTYPE>
@@ -1040,24 +1040,24 @@ inline int YsGenericString <CHARTYPE>::STRNCMP(const CHARTYPE str1[],const CHART
 {
 	YSSIZE_T i;
 	CHARTYPE c1=0,c2=0;
-	for(i=0; 0!=str1[i] && 0!=str2[i] && i<n; i++)
+	for(i = 0; 0 != str1[i] && 0 != str2[i] && i < n; i++)
 	{
-		c1=str1[i];
-		c2=str2[i];
-		if('a'<=c1 && c1<='z')
+		c1 = str1[i];
+		c2 = str2[i];
+		if('a' <= c1 && c1 <= 'z')
 		{
-			c1=c1-'a'+'A';
+			c1 = c1-'a' + 'A';
 		}
-		if('a'<=c2 && c2<='z')
+		if('a' <= c2 && c2 <= 'z')
 		{
-			c2=c2-'a'+'A';
+			c2 = c2-'a' + 'A';
 		}
-		if(c1!=c2)
+		if(c1 != c2)
 		{
-			return c1-c2;
+			return c1 - c2;
 		}
 	}
-	return (i==n ? 0 : (int)str1[i]-(int)str2[i]);
+	return (i == n ? 0 : (int)str1[i] - (int)str2[i]);
 }
 
 template <class CHARTYPE>
@@ -1085,32 +1085,32 @@ template <class CHARTYPE>
 inline CHARTYPE *YsGenericString <CHARTYPE>::Strcpy(CHARTYPE dst[],const CHARTYPE src[])
 {
 	int i;
-	for(i=0; 0!=src[i]; i++)
+	for(i = 0; 0 != src[i]; i++)
 	{
-		dst[i]=src[i];
+		dst[i] = src[i];
 	}
-	dst[i]=0;
+	dst[i] = 0;
 	return dst;
 }
 
 template <class CHARTYPE>
 int YsGenericString <CHARTYPE>::Strcat(CHARTYPE str1[],const CHARTYPE str2[])
 {
-	int l=0;
-	for(l=0; 0!=str1[l]; ++l)
+	int l = 0;
+	for(l = 0; 0 != str1[l]; ++l)
 	{
 	}
 
-	if(NULL!=str2)
+	if(NULL != str2)
 	{
-		for(int i=0; 0!=str2[i]; ++i)
+		for(int i = 0; 0 != str2[i]; ++i)
 		{
-			str1[l]=str2[i];
+			str1[l] = str2[i];
 			++l;
 		}
 	}
 
-	str1[l]=0;
+	str1[l] = 0;
 	return l;
 }
 
@@ -1131,9 +1131,9 @@ template <class CHARTYPE>
 inline YSBOOL YsGenericString <CHARTYPE>::CharIsOneOf(CHARTYPE c,const CHARTYPE str[])
 {
 	int i;
-	for(i=0; str[i]!=0; i++)
+	for(i = 0; str[i] != 0; i++)
 	{
-		if(str[i]==c)
+		if(str[i] == c)
 		{
 			return YSTRUE;
 		}
@@ -1144,15 +1144,15 @@ inline YSBOOL YsGenericString <CHARTYPE>::CharIsOneOf(CHARTYPE c,const CHARTYPE 
 template <class CHARTYPE>
 /* static */ int YsGenericString<CHARTYPE>::CHARCMP(CHARTYPE a,CHARTYPE b)
 {
-	if('a'<=a && a<='z')
+	if('a' <= a && a <= 'z')
 	{
-		a=a-'a'+'A';
+		a = a - 'a' + 'A';
 	}
-	if('a'<=b && b<='z')
+	if('a' <= b && b <= 'z')
 	{
-		b=b-'a'+'A';
+		b = b - 'a' + 'A';
 	}
-	return a-b;
+	return a - b;
 }
 
 template <class CHARTYPE>
@@ -1170,7 +1170,7 @@ inline YsGenericString <CHARTYPE>::YsGenericString(const CHARTYPE from[])
 template <class CHARTYPE>
 inline YsGenericString <CHARTYPE>::YsGenericString(const YsGenericString <CHARTYPE> &from)
 {
-	YsArray <CHARTYPE,16>::Set(from.Strlen()+1,from.GetArray());
+	YsArray <CHARTYPE,16>::Set(from.Strlen() + 1, from.GetArray());
 }
 
 template <class CHARTYPE>
@@ -1188,39 +1188,39 @@ inline YSSIZE_T YsGenericString <CHARTYPE>::Strlen(void) const
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::Set(const CHARTYPE str[])
 {
-	if(YsArray <CHARTYPE,16>::vv==str)
+	if(YsArray <CHARTYPE,16>::vv.data() == str)
 	{
 		return YSOK;
 	}
-	if(NULL!=str)
+	if(NULL != str)
 	{
-		return YsArray <CHARTYPE,16>::Set(Strlen(str)+1,str);
+		return YsArray <CHARTYPE,16>::Set(Strlen(str) + 1, str);
 	}
 	else
 	{
-		CHARTYPE empty[1]={0};
-		return YsArray <CHARTYPE,16>::Set(1,empty);
+		CHARTYPE empty[1] = {0};
+		return YsArray <CHARTYPE,16>::Set(1, empty);
 	}
 }
 
 template <class CHARTYPE>
-inline YSRESULT YsGenericString <CHARTYPE>::Set(YSSIZE_T n,const CHARTYPE str[])
+inline YSRESULT YsGenericString <CHARTYPE>::Set(YSSIZE_T n, const CHARTYPE str[])
 {
-	if(NULL==str)
+	if(NULL == str)
 	{
 		return Set(NULL);
 	}
 
 	YSSIZE_T l;
-	l=(YSSIZE_T)Strlen(str);
-	if(l<n)
+	l = (YSSIZE_T)Strlen(str);
+	if(l < n)
 	{
-		n=l;
+		n = l;
 	}
 
-	if(YsArray <CHARTYPE,16>::Set(n+1,str)==YSOK)
+	if(YsArray <CHARTYPE,16>::Set(n + 1, str) == YSOK)
 	{
-		YsArray <CHARTYPE,16>::vv[n]=0;
+		YsArray <CHARTYPE,16>::vv[n] = 0;
 		return YSOK;
 	}
 	else
@@ -1232,10 +1232,10 @@ inline YSRESULT YsGenericString <CHARTYPE>::Set(YSSIZE_T n,const CHARTYPE str[])
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::Set(YSSIZE_T n,CHARTYPE c)
 {
-	YsArray <CHARTYPE,16>::vv[n]=c;
-	if(0==c && n<GetN()-1)
+	YsArray <CHARTYPE,16>::vv[n] = c;
+	if(0 == c && n < GetN() - 1)
 	{
-		Resize(n+1);
+		Resize(n + 1);
 	}
 	return YSOK;
 }
@@ -1255,33 +1255,33 @@ inline const CHARTYPE &YsGenericString <CHARTYPE>::operator[](YSSIZE_T idx)
 template <class CHARTYPE>
 inline YsGenericString <CHARTYPE>::operator const CHARTYPE *() const
 {
-	return vv;
+	return vv.data();
 }
 
 template <class CHARTYPE>
 inline YsGenericString <CHARTYPE>::operator const CHARTYPE *()
 {
-	return vv;
+	return vv.data();
 }
 
 template <class CHARTYPE>
 inline const CHARTYPE *YsGenericString <CHARTYPE>::Ptr(void) const
 {
-	return vv;
+	return vv.data();
 }
 
 template <class CHARTYPE>
 inline const CHARTYPE *YsGenericString <CHARTYPE>::Txt(void) const
 {
-	return vv;
+	return vv.data();
 }
 
 template <class CHARTYPE>
 inline const CHARTYPE *YsGenericString<CHARTYPE>::Skip(const CHARTYPE keyword[]) const
 {
-	if(YSTRUE==this->DoesStartWith(keyword))
+	if(YSTRUE == this->DoesStartWith(keyword))
 	{
-		return Txt()+Strlen(keyword);
+		return Txt() + Strlen(keyword);
 	}
 	return NULL;
 }
@@ -1289,9 +1289,9 @@ inline const CHARTYPE *YsGenericString<CHARTYPE>::Skip(const CHARTYPE keyword[])
 template <class CHARTYPE>
 inline const CHARTYPE *YsGenericString<CHARTYPE>::SKIP(const CHARTYPE keyword[]) const
 {
-	if(YSTRUE==this->DOESSTARTWITH(keyword))
+	if(YSTRUE == this->DOESSTARTWITH(keyword))
 	{
-		return Txt()+Strlen(keyword);
+		return Txt() + Strlen(keyword);
 	}
 	return NULL;
 }
@@ -1299,15 +1299,15 @@ inline const CHARTYPE *YsGenericString<CHARTYPE>::SKIP(const CHARTYPE keyword[])
 template <class CHARTYPE>
 inline const CHARTYPE *YsGenericString <CHARTYPE>::GetArray(void) const
 {
-	return vv;
+	return vv.data();
 }
 
 template <class CHARTYPE>
 inline CHARTYPE YsGenericString <CHARTYPE>::LastChar(void) const
 {
-	if(Strlen()>0)
+	if(Strlen() > 0)
 	{
-		return vv[Strlen()-1];
+		return vv[Strlen() - 1];
 	}
 	return 0;
 }
@@ -1315,22 +1315,22 @@ inline CHARTYPE YsGenericString <CHARTYPE>::LastChar(void) const
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::Append(const CHARTYPE str[])
 {
-	Resize(GetN()-1);
-	return YsArray <CHARTYPE,16>::Append((int)Strlen(str)+1,str);
+	Resize(GetN() - 1);
+	return YsArray <CHARTYPE,16>::Append((int)Strlen(str) + 1,str);
 }
 
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::Append(CHARTYPE c,YSSIZE_T repeat)
 {
-	if(0<repeat)
+	if(0 < repeat)
 	{
-		auto N=Strlen();
-		Resize(N+repeat+1);
-		for(YSSIZE_T i=0; i<repeat; ++i)
+		auto N = Strlen();
+		Resize(N + repeat + 1);
+		for(YSSIZE_T i = 0; i < repeat; ++i)
 		{
-			vv[N+i]=c;
+			vv[N + i] = c;
 		}
-		vv[N+repeat]=0;
+		vv[N + repeat] = 0;
 	}
 	return YSOK;
 }
@@ -1338,16 +1338,16 @@ inline YSRESULT YsGenericString <CHARTYPE>::Append(CHARTYPE c,YSSIZE_T repeat)
 template <class CHARTYPE>
 YSRESULT YsGenericString <CHARTYPE>::Append(YSSIZE_T n,const CHARTYPE str[])
 {
-	if(NULL!=str)
+	if(NULL != str)
 	{
-		YSSIZE_T  curLen=Strlen();
-		YSSIZE_T  toAdd=YsSmaller <YSSIZE_T> (n,this->Strlen(str));
-		Resize(curLen+toAdd+1);
-		for(YSSIZE_T i=0; i<toAdd; i++)
+		YSSIZE_T  curLen = Strlen();
+		YSSIZE_T  toAdd = YsSmaller <YSSIZE_T> (n, this->Strlen(str));
+		Resize(curLen + toAdd + 1);
+		for(YSSIZE_T i = 0; i < toAdd; i++)
 		{
-			vv[curLen+i]=str[i];
+			vv[curLen + i] = str[i];
 		}
-		vv[curLen+toAdd]=0;
+		vv[curLen + toAdd] = 0;
 	}
 	return YSOK;
 }
@@ -1355,10 +1355,10 @@ YSRESULT YsGenericString <CHARTYPE>::Append(YSSIZE_T n,const CHARTYPE str[])
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::BackSpace(void)
 {
-	if(Strlen()>0)
+	if(Strlen() > 0)
 	{
-		YSSIZE_T l=Strlen();
-		vv[l-1]=0;
+		YSSIZE_T l = Strlen();
+		vv[l - 1]=0;
 		Resize(l);
 		return YSOK;
 	}
@@ -1368,13 +1368,13 @@ inline YSRESULT YsGenericString <CHARTYPE>::BackSpace(void)
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::Delete(YSSIZE_T pos)               // str[pos] is deleted.
 {
-	if(0<=pos && pos<Strlen())
+	if(0 <= pos && pos < Strlen())
 	{
-		YSSIZE_T l=Strlen();
+		YSSIZE_T l = Strlen();
 
-		for(YSSIZE_T i=pos; i<l; i++)
+		for(YSSIZE_T i = pos; i < l; i++)
 		{
-			vv[i]=vv[i+1];
+			vv[i] = vv[i + 1];
 		}
 
 		Resize(l);
@@ -1386,19 +1386,19 @@ inline YSRESULT YsGenericString <CHARTYPE>::Delete(YSSIZE_T pos)               /
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::DeleteRange(YSSIZE_T pos,YSSIZE_T lng)
 {
-	if(0<=pos && pos<Strlen() && 0<lng)
+	if(0 <= pos && pos < Strlen() && 0 < lng)
 	{
-		if(Strlen()<=pos+lng)
+		if(Strlen() <= pos + lng)
 		{
 			SetLength(pos);
 		}
 		else
 		{
-			for(YSSIZE_T i=0; pos+i+lng<Strlen(); i++)
+			for(YSSIZE_T i = 0; pos + i + lng < Strlen(); i++)
 			{
-				vv[pos+i]=vv[pos+i+lng];
+				vv[pos + i] = vv[pos + i + lng];
 			}
-			SetLength(Strlen()-lng);
+			SetLength(Strlen() - lng);
 		}
 		return YSOK;
 	}
@@ -1408,27 +1408,27 @@ inline YSRESULT YsGenericString <CHARTYPE>::DeleteRange(YSSIZE_T pos,YSSIZE_T ln
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::Insert(YSSIZE_T pos,const CHARTYPE c,YSSIZE_T repeat)  // str[pos] will be c.  Later string will be shifted.
 {
-	if(repeat<=0)
+	if(repeat <= 0)
 	{
 		return YSOK;
 	}
-	const YSSIZE_T n=Strlen();
-	if(Strlen()<=pos)
+	const YSSIZE_T n = Strlen();
+	if(Strlen() <= pos)
 	{
-		Append(c,repeat);
+		Append(c, repeat);
 		return YSOK;
 	}
-	else if(0<=pos)
+	else if(0 <= pos)
 	{
-		Resize(n+repeat+1);
+		Resize(n + repeat+1);
 
-		for(YSSIZE_T i=n+repeat; pos+repeat<=i; i--)
+		for(YSSIZE_T i = n + repeat; pos + repeat <= i; i--)
 		{
-			vv[i]=vv[i-repeat];
+			vv[i] = vv[i - repeat];
 		}
-		for(YSSIZE_T i=0; i<repeat; ++i)
+		for(YSSIZE_T i = 0; i < repeat; ++i)
 		{
-			vv[pos+i]=c;
+			vv[pos + i] = c;
 		}
 
 		return YSOK;
@@ -1439,34 +1439,34 @@ inline YSRESULT YsGenericString <CHARTYPE>::Insert(YSSIZE_T pos,const CHARTYPE c
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::InsertString(YSSIZE_T pos,const CHARTYPE str[])
 {
-	if(0==Strlen())
+	if(0 == Strlen())
 	{
 		return Set(str);
 	}
 	else
 	{
-		const YSSIZE_T lng=Strlen(str);
-		if(0<lng)
+		const YSSIZE_T lng = Strlen(str);
+		if(0 < lng)
 		{
-			if(0>pos)
+			if(0 > pos)
 			{
-				pos=0;
+				pos = 0;
 			}
-			if(Strlen()<pos)
+			if(Strlen() < pos)
 			{
-				pos=Strlen();
-			}
-
-			SetLength(Strlen()+lng);
-
-			for(YSSIZE_T i=Strlen()-1; i>=(pos+lng); i--)
-			{
-				vv[i]=vv[i-lng];
+				pos = Strlen();
 			}
 
-			for(YSSIZE_T i=0; i<lng; i++)
+			SetLength(Strlen() + lng);
+
+			for(YSSIZE_T i = Strlen() - 1; i >= (pos + lng); i--)
 			{
-				vv[pos+i]=str[i];
+				vv[i] = vv[i - lng];
+			}
+			
+			for(YSSIZE_T i = 0; i < lng; i++)
+			{
+				vv[pos + i] = str[i];
 			}
 		}
 	}
@@ -1477,24 +1477,24 @@ template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::DeleteHeadSpace(void)
 {
 	int i,nDel;
-	nDel=0;
-	for(i=0; vv[i]!=0; i++)
+	nDel = 0;
+	for(i = 0; vv[i] != 0; i++)
 	{
 		nDel=i;
-		if(vv[i]!=' ' && vv[i]!='\t' && YSTRUE==Isprint(vv[i]))
+		if(vv[i] != ' ' && vv[i] != '\t' && YSTRUE == Isprint(vv[i]))
 		{
 			break;
 		}
 	}
 
-	if(nDel>0)
+	if(nDel > 0)
 	{
-		for(i=nDel; vv[i]!=0; i++)
+		for(i = nDel; vv[i] != 0; i++)
 		{
-			vv[i-nDel]=vv[i];
+			vv[i - nDel] = vv[i];
 		}
-		vv[i-nDel]=0;
-		Resize(GetN()-nDel);
+		vv[i - nDel] = 0;
+		Resize(GetN() - nDel);
 	}
 }
 
@@ -1504,61 +1504,61 @@ inline void YsGenericString <CHARTYPE>::DeleteTailSpace(void)
 	unsigned int chr;
 	YSSIZE_T i,cut,len;
 
-	len=Strlen();
-	cut=0;
-	for(i=0; i<len; i++)
+	len = Strlen();
+	cut = 0;
+	for(i = 0; i < len; i++)
 	{
-		chr=(unsigned int)(vv[i]);
-		if(chr!=' ' && chr!='\t' && YSTRUE==Isprint(chr))
+		chr = (unsigned int)(vv[i]);
+		if(chr != ' ' && chr != '\t' && YSTRUE == Isprint(chr))
 		{
-			cut=i+1;
+			cut = i + 1;
 		}
 	}
 
-	if(cut<len)
+	if(cut < len)
 	{
-		vv[cut]=0;
-		Resize(cut+1);
+		vv[cut] = 0;
+		Resize(cut + 1);
 	}
 }
 
 template <class CHARTYPE>
 inline void YsGenericString<CHARTYPE>::DropSingleLineComment(const CHARTYPE symbol[],YSBOOL respectDoubleQuote,YSBOOL respectSingleQuote)
 {
-	const int NORMAL=0,IN_DOUBLEQUOTE=1,IN_SINGLEQUOTE=2;
-	int state=NORMAL;
+	const int NORMAL = 0,IN_DOUBLEQUOTE = 1,IN_SINGLEQUOTE = 2;
+	int state = NORMAL;
 
 	auto symbolLen=YsGenericString<CHARTYPE>::Strlen(symbol);
 
-	for(YSSIZE_T ptr=0; 0!=vv[ptr]; ++ptr)
+	for(YSSIZE_T ptr = 0; 0 != vv[ptr]; ++ptr)
 	{
 		switch(state)
 		{
 		case NORMAL:
-			if(0==YsGenericString<CHARTYPE>::Strncmp(vv+ptr,symbol,symbolLen))
+			if(0==YsGenericString<CHARTYPE>::Strncmp(vv + ptr,symbol,symbolLen))
 			{
 				SetLength(ptr);
 				return;
 			}
-			else if(YSTRUE==respectDoubleQuote && '\"'==vv[ptr])
+			else if(YSTRUE == respectDoubleQuote && '\"' == vv[ptr])
 			{
-				state=IN_DOUBLEQUOTE;
+				state = IN_DOUBLEQUOTE;
 			}
-			else if(YSTRUE==respectSingleQuote && '\''==vv[ptr])
+			else if(YSTRUE == respectSingleQuote && '\'' == vv[ptr])
 			{
-				state=IN_SINGLEQUOTE;
+				state = IN_SINGLEQUOTE;
 			}
 			break;
 		case IN_DOUBLEQUOTE:
-			if('\"'==vv[ptr])
+			if('\"' == vv[ptr])
 			{
-				state=NORMAL;
+				state = NORMAL;
 			}
 			break;
 		case IN_SINGLEQUOTE:
-			if('\''==vv[ptr])
+			if('\'' == vv[ptr])
 			{
-				state=NORMAL;
+				state = NORMAL;
 			}
 			break;
 		}
@@ -1568,38 +1568,38 @@ inline void YsGenericString<CHARTYPE>::DropSingleLineComment(const CHARTYPE symb
 template <class CHARTYPE>
 inline void YsGenericString<CHARTYPE>::PinchConsecutiveSpace(YSBOOL respectDoubleQuote,YSBOOL respectSingleQuote)
 {
-	const int NORMAL=0,IN_DOUBLEQUOTE=1,IN_SINGLEQUOTE=2;
+	const int NORMAL  =0,IN_DOUBLEQUOTE = 1,IN_SINGLEQUOTE = 2;
 	int state=NORMAL;
 
-	for(YSSIZE_T ptr=0; 0!=vv[ptr]; ++ptr)
+	for(YSSIZE_T ptr = 0; 0 != vv[ptr]; ++ptr)
 	{
 		switch(state)
 		{
 		case NORMAL:
-			if((' '==vv[ptr] || '\t'==vv[ptr]) && (' '==vv[ptr+1] || '\t'==vv[ptr+1]))
+			if((' ' == vv[ptr] || '\t' == vv[ptr]) && (' ' == vv[ptr + 1] || '\t' == vv[ptr + 1]))
 			{
 				Delete(ptr);
 				--ptr;
 			}
-			else if(YSTRUE==respectDoubleQuote && '\"'==vv[ptr])
+			else if(YSTRUE == respectDoubleQuote && '\"' == vv[ptr])
 			{
-				state=IN_DOUBLEQUOTE;
+				state = IN_DOUBLEQUOTE;
 			}
-			else if(YSTRUE==respectSingleQuote && '\''==vv[ptr])
+			else if(YSTRUE == respectSingleQuote && '\'' == vv[ptr])
 			{
-				state=IN_SINGLEQUOTE;
+				state = IN_SINGLEQUOTE;
 			}
 			break;
 		case IN_DOUBLEQUOTE:
-			if('\"'==vv[ptr])
+			if('\"' == vv[ptr])
 			{
-				state=NORMAL;
+				state = NORMAL;
 			}
 			break;
 		case IN_SINGLEQUOTE:
-			if('\''==vv[ptr])
+			if('\'' == vv[ptr])
 			{
-				state=NORMAL;
+				state = NORMAL;
 			}
 			break;
 		}
@@ -1610,11 +1610,11 @@ template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::Capitalize(void)
 {
 	int i;
-	for(i=0; vv[i]!=0; i++)
+	for(i = 0; vv[i] != 0; i++)
 	{
-		if('a'<=vv[i] && vv[i]<='z')
+		if('a' <= vv[i] && vv[i] <= 'z')
 		{
-			vv[i]=vv[i]+'A'-'a';
+			vv[i] = vv[i] + 'A'-'a';
 		}
 	}
 }
@@ -1623,11 +1623,11 @@ template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::Uncapitalize(void)
 {
 	int i;
-	for(i=0; vv[i]!=0; i++)
+	for(i = 0; vv[i] != 0; i++)
 	{
-		if('A'<=vv[i] && vv[i]<='Z')
+		if('A' <= vv[i] && vv[i] <= 'Z')
 		{
-			vv[i]=vv[i]+'a'-'A';
+			vv[i] = vv[i] + 'a'-'A';
 		}
 	}
 }
@@ -1635,56 +1635,56 @@ inline void YsGenericString <CHARTYPE>::Uncapitalize(void)
 template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::SetLength(YSSIZE_T n)
 {
-	if(0<=n)
+	if(0 <= n)
 	{
-		YSSIZE_T k=Strlen();
+		YSSIZE_T k = Strlen();
 
-		Resize(n+1);
-		for(YSSIZE_T i=k; i<n; i++)
+		Resize(n + 1);
+		for(YSSIZE_T i = k; i < n; i++)
 		{
-			vv[i]=' ';
+			vv[i] = ' ';
 		}
-		vv[n]=0;
+		vv[n] = 0;
 	}
 }
 
 template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::ReplaceExtension(const CHARTYPE ext[])
 {
-	YSSIZE_T i,insPoint;
+	YSSIZE_T i, insPoint;
 	YSSIZE_T extLen;
 	const CHARTYPE *extWithoutDot;
 
-	if(ext==NULL || ext[0]==0)
+	if(ext == NULL || ext[0] == 0)
 	{
 		RemoveExtension();
 		return;
 	}
 
-	if(ext[0]=='.')
+	if(ext[0] == '.')
 	{
-		extLen=(int)Strlen(ext)-1;
-		extWithoutDot=ext+1;
+		extLen = (int)Strlen(ext) - 1;
+		extWithoutDot = ext + 1;
 	}
 	else
 	{
-		extLen=(int)Strlen(ext);
-		extWithoutDot=ext;
+		extLen = (int)Strlen(ext);
+		extWithoutDot = ext;
 	}
 
-	YSSIZE_T l=Strlen();
-	for(i=l-1; i>=0; i--)
+	YSSIZE_T l = Strlen();
+	for(i = l - 1; i >= 0; i--)
 	{
-		if(vv[i]=='.' || vv[i]=='/' || vv[i]=='\\')
+		if(vv[i] == '.' || vv[i] == '/' || vv[i] == '\\')
 		{
 			break;
 		}
 	}
 
-	if(i<0 || vv[i]!='.') // Means there's no dot in the filename.
+	if(i < 0 || vv[i] != '.') // Means there's no dot in the filename.
 	{
-		insPoint=Strlen();
-		YsArray <CHARTYPE,16>::Resize(Strlen()+extLen+2);
+		insPoint = Strlen();
+		YsArray <CHARTYPE,16>::Resize(Strlen() + extLen + 2);
 	}
 	else
 	{
@@ -1692,22 +1692,22 @@ inline void YsGenericString <CHARTYPE>::ReplaceExtension(const CHARTYPE ext[])
 		YsArray <CHARTYPE,16>::Resize(insPoint+extLen+2);
 	}
 
-	vv[insPoint]='.';
-	Strcpy(vv+insPoint+1,extWithoutDot);
+	vv[insPoint] = '.';
+	Strcpy(vv.data() + insPoint + 1, extWithoutDot);
 }
 
 template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::RemoveExtension(void)
 {
-	for(YSSIZE_T i=Strlen()-1; i>=0; i--)
+	for(YSSIZE_T i = Strlen() - 1; i >= 0; i--)
 	{
-		if(vv[i]=='.')
+		if(vv[i] == '.')
 		{
-			vv[i]=0;
-			YsArray <CHARTYPE,16>::Resize(i+1);
+			vv[i] = 0;
+			YsArray <CHARTYPE,16>::Resize(i + 1);
 			break;
 		}
-		else if(vv[i]=='/' || vv[i]=='\\' || vv[i]==':')
+		else if(vv[i] == '/' || vv[i] == '\\' || vv[i] == ':')
 		{
 			break;
 		}
@@ -1717,11 +1717,11 @@ inline void YsGenericString <CHARTYPE>::RemoveExtension(void)
 template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::GetExtension(YsGenericString <CHARTYPE> &ext) const
 {
-	for(YSSIZE_T i=Strlen()-1; i>=0; i--)
+	for(YSSIZE_T i = Strlen() - 1; i >= 0; i--)
 	{
-		if('.'==vv[i])
+		if('.' == vv[i])
 		{
-			ext.Set(vv+i);
+			ext.Set(vv.data() + i);
 			return;
 		}
 	}
@@ -1731,14 +1731,14 @@ inline void YsGenericString <CHARTYPE>::GetExtension(YsGenericString <CHARTYPE> 
 template <class CHARTYPE>
 inline void YsGenericString <CHARTYPE>::GetSubset(YsGenericString <CHARTYPE> &sub,YSSIZE_T top,YSSIZE_T length) const
 {
-	YsMakeSmaller<YSSIZE_T>(length,Strlen()-top);
-	if(0>=length)
+	YsMakeSmaller<YSSIZE_T>(length, Strlen() - top);
+	if(0 >= length)
 	{
 		sub.SetLength(0);
 	}
 	else
 	{
-		sub.Set(length,YsArray <CHARTYPE,16>::GetArray()+top);
+		sub.Set(length, YsArray <CHARTYPE,16>::GetArray() + top);
 	}
 }
 
@@ -1746,22 +1746,22 @@ template <class CHARTYPE>
 inline const CHARTYPE *YsGenericString <CHARTYPE>::MakeFullPathName(const CHARTYPE path[],const CHARTYPE name[])
 {
 	Set(path);
-	if(LastChar()=='/' || LastChar()=='\\')
+	if(LastChar() == '/' || LastChar() == '\\')
 	{
-		if('/'!=name[0] && '\\'!=name[0])
+		if('/' != name[0] && '\\' != name[0])
 		{
 			Append(name);
 		}
 		else
 		{
-			Append(name+1);
+			Append(name + 1);
 		}
 	}
 	else
 	{
-		if('/'!=name[0] && '\\'!=name[0])
+		if('/' != name[0] && '\\' != name[0])
 		{
-			const CHARTYPE add[2]={'/',0};
+			const CHARTYPE add[2] = {'/',0};
 			Append(add);
 		}
 		Append(name);
@@ -1770,29 +1770,29 @@ inline const CHARTYPE *YsGenericString <CHARTYPE>::MakeFullPathName(const CHARTY
 }
 
 template <class CHARTYPE>
-template <class STRTYPE,const int N>
-YSRESULT YsGenericString <CHARTYPE>::Arguments(YsArray <STRTYPE,N> &args,const CHARTYPE *blank,const CHARTYPE *comma) const
+template <class STRTYPE, const int N>
+YSRESULT YsGenericString <CHARTYPE>::Arguments(YsArray <STRTYPE, N>& args, const CHARTYPE* blank, const CHARTYPE* comma) const
 {
-	args.Set(0,NULL);
+	args.Set(0, NULL);
 
-	const YSSIZE_T l=Strlen();
+	const YSSIZE_T l = Strlen();
 
-	YSSIZE_T i=0;
-	while(YSTRUE==CharIsOneOf(vv[i],blank))
+	YSSIZE_T i = 0;
+	while (YSTRUE == CharIsOneOf(vv[i], blank))
 	{
 		i++;
 	}
 
-	YSSIZE_T head=i;
-	while(i<l)
+	YSSIZE_T head = i;
+	while (i < l)
 	{
-		if(vv[head]=='\"')
+		if (vv[head] == '\"')
 		{
 			head++;
 			i++;
-			while(i<l && vv[i]!='\"')
+			while (i < l && vv[i] != '\"')
 			{
-				if(YSTRUE!=Isprint(vv[i]))
+				if (YSTRUE != Isprint(vv[i]))
 				{
 					break;
 				}
@@ -1800,97 +1800,97 @@ YSRESULT YsGenericString <CHARTYPE>::Arguments(YsArray <STRTYPE,N> &args,const C
 			}
 
 			args.Increment();
-			args.GetEnd().Set(i-head,vv+head);
+			args.GetEnd().Set(i - head, vv.data() + head);
 
-			if(vv[i]=='\"')
+			if (vv[i] == '\"')
 			{
 				i++;
 			}
 		}
 		else
 		{
-			while(i<l && (CharIsOneOf(vv[i],blank)!=YSTRUE && CharIsOneOf(vv[i],comma)!=YSTRUE))
+			while (i < l && (CharIsOneOf(vv[i], blank) != YSTRUE && CharIsOneOf(vv[i], comma) != YSTRUE))
 			{
-				if(YSTRUE!=Isprint(vv[i]))
+				if (YSTRUE != Isprint(vv[i]))
 				{
 					break;
 				}
 				i++;
 			}
 
-			if(head<i)  // <- This condition is added on 2005/03/03
+			if (head < i)  // <- This condition is added on 2005/03/03
 			{
 				args.Increment();
-				args.GetEnd().Set(i-head,vv+head);
+				args.GetEnd().Set(i - head, vv.data() + head);
 			}
-			else if(head==i && CharIsOneOf(vv[i],comma)==YSTRUE) // < This condition is added (I thought there was, did I accidentally delete?) on 2012/01/26
+			else if (head == i && CharIsOneOf(vv[i], comma) == YSTRUE) // < This condition is added (I thought there was, did I accidentally delete?) on 2012/01/26
 			{
-				const CHARTYPE empty[1]={0};
+				const CHARTYPE empty[1] = { 0 };
 				args.Increment();
 				args.GetEnd().Set(empty);
 			}
 		}
 
-		while(i<l && YSTRUE!=Isprint(vv[i]))
+		while (i < l && YSTRUE != Isprint(vv[i]))
 		{
 			i++;
 		}
-		while(i<l && CharIsOneOf(vv[i],blank)==YSTRUE)  // Skip blank separator
+		while (i < l && CharIsOneOf(vv[i], blank) == YSTRUE)  // Skip blank separator
 		{
 			i++;
 		}
-		if(CharIsOneOf(vv[i],comma)==YSTRUE) // Skip one comma separator
+		if (CharIsOneOf(vv[i], comma) == YSTRUE) // Skip one comma separator
 		{
 			i++;
 
-			while(i<l && CharIsOneOf(vv[i],blank)==YSTRUE)  // Skip blank separator after a comma separator
+			while (i < l && CharIsOneOf(vv[i], blank) == YSTRUE)  // Skip blank separator after a comma separator
 			{
 				i++;
 			}
 
-			if(i==l)
+			if (i == l)
 			{
 				args.Increment();
 				args.GetEnd().MakeUnitLength(0);
 			}
 		}
-		head=i;
+		head = i;
 	}
 
 	return YSOK;
 }
 
 template <class CHARTYPE>
-inline YSRESULT YsGenericString <CHARTYPE>::SeparatePathFile(YsGenericString <CHARTYPE> &pth,YsGenericString <CHARTYPE> &fil) const
+inline YSRESULT YsGenericString <CHARTYPE>::SeparatePathFile(YsGenericString <CHARTYPE>& pth, YsGenericString <CHARTYPE>& fil) const
 {
-	int cutPtr,seekPtr;
+	int cutPtr, seekPtr;
 
-	cutPtr=0;
+	cutPtr = 0;
 
 	/* Skip Drive Name */
-	if(vv[0]!=0 && vv[1]==':')
+	if (vv[0] != 0 && vv[1] == ':')
 	{
-		cutPtr+=2;
+		cutPtr += 2;
 	}
 
 	/* scan until nul Stopper */
-	for(seekPtr=cutPtr; vv[seekPtr]!=0; seekPtr++)
+	for (seekPtr = cutPtr; vv[seekPtr] != 0; seekPtr++)
 	{
-		if(vv[seekPtr]=='\\' || vv[seekPtr]=='/' || vv[seekPtr]==':')
+		if (vv[seekPtr] == '\\' || vv[seekPtr] == '/' || vv[seekPtr] == ':')
 		{
-			cutPtr=seekPtr+1;
+			cutPtr = seekPtr + 1;
 		}
 	}
 
 	/* cutPtr points *tmp  or after ':' or after last '\\' */
-	fil.Set(vv+cutPtr);
+	fil.Set(vv.data() + cutPtr);
 
-	pth.Resize(cutPtr+1);
-	for(YSSIZE_T i=0; i<cutPtr; i++)
+	pth.Resize(cutPtr + 1);
+	for (YSSIZE_T i = 0; i < cutPtr; i++)
 	{
-		pth.vv[i]=vv[i];
+		pth.vv[i] = vv[i];
 	}
-	pth.vv[cutPtr]=0;
+	pth.vv[cutPtr] = 0;
 
 	return YSOK;
 }
@@ -1898,10 +1898,10 @@ inline YSRESULT YsGenericString <CHARTYPE>::SeparatePathFile(YsGenericString <CH
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::SimplifyPath(void)
 {
-	YSRESULT res=YSERR;
-	while(YSOK==SimplifyPathOneStep())
+	YSRESULT res = YSERR;
+	while (YSOK == SimplifyPathOneStep())
 	{
-		res=YSOK;
+		res = YSOK;
 	}
 	return res;
 }
@@ -1909,95 +1909,95 @@ inline YSRESULT YsGenericString <CHARTYPE>::SimplifyPath(void)
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::SimplifyPathOneStep(void)
 {
-	YSRESULT worked=YSERR;
-	YsGenericString <CHARTYPE> edit=*this;
+	YSRESULT worked = YSERR;
+	YsGenericString <CHARTYPE> edit = *this;
 
 	// Also need to change // \\ \/ or \/ into single separator.
-	for(auto idx=edit.Strlen()-1; 0<idx; --idx)
+	for (auto idx = edit.Strlen() - 1; 0 < idx; --idx)
 	{
-		if(('/'==edit[idx] || '\\'==edit[idx]) && ('/'==edit[idx-1] || '\\'==edit[idx-1]))
+		if (('/' == edit[idx] || '\\' == edit[idx]) && ('/' == edit[idx - 1] || '\\' == edit[idx - 1]))
 		{
 			edit.Delete((int)idx);
-			worked=YSOK;
+			worked = YSOK;
 		}
 	}
 
 	// Delete something/.. or something\..
 	// Do not delete ../.. or ..\..
-	for(YSSIZE_T idx=0; idx<edit.Strlen(); ++idx)
+	for (YSSIZE_T idx = 0; idx < edit.Strlen(); ++idx)
 	{
-		if(0<idx && 
-		   (edit[idx]=='/' || edit[idx]=='\\') && 
-		   edit[idx+1]=='.' && 
-		   edit[idx+2]=='.' &&
-		   (edit[idx+3]=='/' || edit[idx+3]=='\\' || edit[idx+3]==0))
+		if (0 < idx &&
+			(edit[idx] == '/' || edit[idx] == '\\') &&
+			edit[idx + 1] == '.' &&
+			edit[idx + 2] == '.' &&
+			(edit[idx + 3] == '/' || edit[idx + 3] == '\\' || edit[idx + 3] == 0))
 		{
-			YSSIZE_T prevSeparatorPos=-1;
-			for(auto search=idx-1; 0<=search; --search)
+			YSSIZE_T prevSeparatorPos = -1;
+			for (auto search = idx - 1; 0 <= search; --search)
 			{
-				if(edit[search]=='/' || edit[search]=='\\')
+				if (edit[search] == '/' || edit[search] == '\\')
 				{
-					prevSeparatorPos=search;
+					prevSeparatorPos = search;
 					break;
 				}
 			}
 			// If not found, assume that edit[-1] is a separator.
 
-			if(prevSeparatorPos==idx-3 && edit[prevSeparatorPos+1]=='.' && edit[prevSeparatorPos+2]=='.')
+			if (prevSeparatorPos == idx - 3 && edit[prevSeparatorPos + 1] == '.' && edit[prevSeparatorPos + 2] == '.')
 			{
 				// It is ../.. or ..\.. situation.  Do nothing.
 				continue;
 			}
 
 			// Otherwise, delete all the way from prevSeparatorPos+1 to idx+3
-			if(0!=edit[idx+3])
+			if (0 != edit[idx + 3])
 			{
-				edit.Delete((int)idx+3);
+				edit.Delete((int)idx + 3);
 			}
-			for(auto delPtr=idx+2; prevSeparatorPos<delPtr; --delPtr)
+			for (auto delPtr = idx + 2; prevSeparatorPos < delPtr; --delPtr)
 			{
 				edit.Delete((int)delPtr);
-				worked=YSOK;
+				worked = YSOK;
 			}
 
-			idx=prevSeparatorPos+1;
+			idx = prevSeparatorPos + 1;
 		}
 	}
 
 	// Change /./ into /
-	for(int idx=0; idx<edit.Strlen()-2; ++idx)
+	for (int idx = 0; idx < edit.Strlen() - 2; ++idx)
 	{
-		if(('/'==edit[idx] || '\\'==edit[idx]) &&
-		   '.'==edit[idx+1] &&
-		   ('/'==edit[idx+2] || '\\'==edit[idx+2]))
+		if (('/' == edit[idx] || '\\' == edit[idx]) &&
+			'.' == edit[idx + 1] &&
+			('/' == edit[idx + 2] || '\\' == edit[idx + 2]))
 		{
 			edit.Delete(idx);
 			edit.Delete(idx);
-			idx-=2;
-			worked=YSOK;
+			idx -= 2;
+			worked = YSOK;
 		}
 	}
 
 	// Delete .\ or ./ upfront
-	while(edit[0]=='.' && (edit[1]=='/' || edit[1]=='\\'))
+	while (edit[0] == '.' && (edit[1] == '/' || edit[1] == '\\'))
 	{
 		edit.Delete(0);
 		edit.Delete(0);
-		worked=YSOK;
+		worked = YSOK;
 	}
 
 	// Delete last \. or \.
-	while(edit.LastChar()=='.' && (edit[edit.Strlen()-2]=='/' || edit[edit.Strlen()-2]=='\\'))
+	while (edit.LastChar() == '.' && (edit[edit.Strlen() - 2] == '/' || edit[edit.Strlen() - 2] == '\\'))
 	{
 		edit.BackSpace();
 		edit.BackSpace();
-		worked=YSOK;
+		worked = YSOK;
 	}
 
 
-	if(YSOK==worked)
+	if (YSOK == worked)
 	{
-		*this=edit;
+		*this = edit;
 	}
 	return worked;
 }
@@ -2005,17 +2005,17 @@ inline YSRESULT YsGenericString <CHARTYPE>::SimplifyPathOneStep(void)
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::SetUTF8String(const char in[])
 {
-	if(NULL!=in)
+	if (NULL != in)
 	{
-		YSSIZE_T l=strlen(in);
-		Resize(l+1);
+		YSSIZE_T l = strlen(in);
+		Resize(l + 1);
 
-		YSSIZE_T nWChar=YsUTF8ToWChar <CHARTYPE> (l+1,vv,in);  // nWChar includes zero terminator.
+		YSSIZE_T nWChar = YsUTF8ToWChar <CHARTYPE>(l + 1, vv.data(), in);  // nWChar includes zero terminator.
 		Resize(nWChar);
 	}
 	else
 	{
-		CHARTYPE empty[1]={0};
+		CHARTYPE empty[1] = { 0 };
 		Set(empty);
 	}
 
@@ -2023,39 +2023,39 @@ inline YSRESULT YsGenericString <CHARTYPE>::SetUTF8String(const char in[])
 }
 
 template <class CHARTYPE>
-inline const CHARTYPE *YsGenericString <CHARTYPE>::FgetsUTF8(FILE *fp)
+inline const CHARTYPE* YsGenericString <CHARTYPE>::FgetsUTF8(FILE* fp)
 {
-	const YSSIZE_T bufSize=256;
+	const YSSIZE_T bufSize = 256;
 
 	char buf[bufSize];
-	if(NULL==fgets(buf,bufSize-1,fp))
+	if (NULL == fgets(buf, bufSize - 1, fp))
 	{
 		return NULL;
 	}
 
-	size_t l=strlen(buf);
-	if('\n'==buf[l-1])
+	size_t l = strlen(buf);
+	if ('\n' == buf[l - 1])
 	{
-		buf[l-1]=0;
+		buf[l - 1] = 0;
 		SetUTF8String(buf);
-		return vv;
+		return vv.data();
 	}
 
-	YsArray <char,256> utf8;
-	utf8.Set(l,buf);
-	while(fgets(buf,bufSize-1,fp)!=NULL)
+	YsArray <char, 256> utf8;
+	utf8.Set(l, buf);
+	while (fgets(buf, bufSize - 1, fp) != NULL)
 	{
-		size_t l=strlen(buf);
-		utf8.Append(l,buf);
-		if(buf[l-1]=='\n')
+		size_t l = strlen(buf);
+		utf8.Append(l, buf);
+		if (buf[l - 1] == '\n')
 		{
-			utf8[utf8.GetN()-1]=0;
+			utf8[utf8.GetN() - 1] = 0;
 			SetUTF8String(utf8);
-			return vv;
+			return vv.data();
 		}
 	}
 
-	if(utf8.GetN()==0)
+	if (utf8.GetN() == 0)
 	{
 		MakeUnitLength(0);
 		return NULL;
@@ -2063,121 +2063,121 @@ inline const CHARTYPE *YsGenericString <CHARTYPE>::FgetsUTF8(FILE *fp)
 
 	utf8.Append(0);
 	SetUTF8String(utf8);
-	return vv;
+	return vv.data();
 }
 
 template <class CHARTYPE>
-inline YSBOOL YsGenericString <CHARTYPE>::FindWord(YSSIZE_T *firstIndex,const CHARTYPE keyword[]) const
+inline YSBOOL YsGenericString <CHARTYPE>::FindWord(YSSIZE_T* firstIndex, const CHARTYPE keyword[]) const
 {
-	YSSIZE_T keywordL=Strlen(keyword);
-	for(YSSIZE_T i=0; i<=Strlen()-keywordL; i++)
+	YSSIZE_T keywordL = Strlen(keyword);
+	for (YSSIZE_T i = 0; i <= Strlen() - keywordL; i++)
 	{
-		for(YSSIZE_T j=0; 0!=keyword[j]; j++)
+		for (YSSIZE_T j = 0; 0 != keyword[j]; j++)
 		{
-			if(vv[i+j]!=keyword[j])
+			if (vv[i + j] != keyword[j])
 			{
 				goto NEXTI;
 			}
 		}
-		if(NULL!=firstIndex)
+		if (NULL != firstIndex)
 		{
-			*firstIndex=i;
+			*firstIndex = i;
 		}
 		return YSTRUE;
 	NEXTI:
 		;
 	}
 
-	if(NULL!=firstIndex)
+	if (NULL != firstIndex)
 	{
-		*firstIndex=-1;
+		*firstIndex = -1;
 	}
 	return YSFALSE;
 }
 
 template <class CHARTYPE>
-inline YSBOOL YsGenericString<CHARTYPE>::FINDWORD(YSSIZE_T *firstIndex,const CHARTYPE keyword[]) const
+inline YSBOOL YsGenericString<CHARTYPE>::FINDWORD(YSSIZE_T* firstIndex, const CHARTYPE keyword[]) const
 {
-	YSSIZE_T keywordL=Strlen(keyword);
-	for(YSSIZE_T i=0; i<=Strlen()-keywordL; i++)
+	YSSIZE_T keywordL = Strlen(keyword);
+	for (YSSIZE_T i = 0; i <= Strlen() - keywordL; i++)
 	{
-		for(YSSIZE_T j=0; 0!=keyword[j]; j++)
+		for (YSSIZE_T j = 0; 0 != keyword[j]; j++)
 		{
-			auto a=(('a'<=vv[i+j] && vv[i+j]<='z') ? (vv[i+j]+'A'-'a') : vv[i+j]);
-			auto b=(('a'<=keyword[j] && keyword[j]<='z') ? (keyword[j]+'A'-'a') : keyword[j]);
-			if(a!=b)
+			auto a = (('a' <= vv[i + j] && vv[i + j] <= 'z') ? (vv[i + j] + 'A' - 'a') : vv[i + j]);
+			auto b = (('a' <= keyword[j] && keyword[j] <= 'z') ? (keyword[j] + 'A' - 'a') : keyword[j]);
+			if (a != b)
 			{
 				goto NEXTI;
 			}
 		}
-		if(NULL!=firstIndex)
+		if (NULL != firstIndex)
 		{
-			*firstIndex=i;
+			*firstIndex = i;
 		}
 		return YSTRUE;
 	NEXTI:
 		;
 	}
 
-	if(NULL!=firstIndex)
+	if (NULL != firstIndex)
 	{
-		*firstIndex=-1;
+		*firstIndex = -1;
 	}
 	return YSFALSE;
 }
 
 template <class CHARTYPE>
-inline YSBOOL YsGenericString<CHARTYPE>::FindDelimitedWord(YSSIZE_T *firstIndex,const CHARTYPE keyword[]) const
+inline YSBOOL YsGenericString<CHARTYPE>::FindDelimitedWord(YSSIZE_T* firstIndex, const CHARTYPE keyword[]) const
 {
-	YSSIZE_T keywordL=Strlen(keyword);
-	int state=0;  // 0: Non-alphabet, non-numeric character   1:Alphabetical or numeric character
+	YSSIZE_T keywordL = Strlen(keyword);
+	int state = 0;  // 0: Non-alphabet, non-numeric character   1:Alphabetical or numeric character
 
-	for(YSSIZE_T i=0; i<=Strlen()-keywordL; ++i)
+	for (YSSIZE_T i = 0; i <= Strlen() - keywordL; ++i)
 	{
-		if(0==state)
+		if (0 == state)
 		{
-			for(YSSIZE_T j=0; j<keywordL; ++j)
+			for (YSSIZE_T j = 0; j < keywordL; ++j)
 			{
-				if(vv[i+j]!=keyword[j])
+				if (vv[i + j] != keyword[j])
 				{
 					goto NEXTI;
 				}
 			}
-			if(('a'<=vv[i+keywordL] && vv[i+keywordL]<='z') ||
-			   ('A'<=vv[i+keywordL] && vv[i+keywordL]<='Z') ||
-			   ('0'<=vv[i+keywordL] && vv[i+keywordL]<='9'))
+			if (('a' <= vv[i + keywordL] && vv[i + keywordL] <= 'z') ||
+				('A' <= vv[i + keywordL] && vv[i + keywordL] <= 'Z') ||
+				('0' <= vv[i + keywordL] && vv[i + keywordL] <= '9'))
 			{
 				goto NEXTI;
 			}
 
-			if(nullptr!=firstIndex)
+			if (nullptr != firstIndex)
 			{
-				*firstIndex=i;
+				*firstIndex = i;
 			}
 			return YSTRUE;
 
 		NEXTI:
-			if(('a'<=vv[i] && vv[i]<='z') ||
-			   ('A'<=vv[i] && vv[i]<='Z') ||
-			   ('0'<=vv[i] && vv[i]<='9'))
+			if (('a' <= vv[i] && vv[i] <= 'z') ||
+				('A' <= vv[i] && vv[i] <= 'Z') ||
+				('0' <= vv[i] && vv[i] <= '9'))
 			{
-				state=1;
+				state = 1;
 			}
 		}
 		else
 		{
-			if((vv[i]<'a' || 'z'<vv[i]) &&
-			   (vv[i]<'A' || 'Z'<vv[i]) &&
-			   (vv[i]<'0' || '9'<vv[i]))
+			if ((vv[i] < 'a' || 'z' < vv[i]) &&
+				(vv[i] < 'A' || 'Z' < vv[i]) &&
+				(vv[i] < '0' || '9' < vv[i]))
 			{
-				state=0;
+				state = 0;
 			}
 		}
 	}
 
-	if(nullptr!=firstIndex)
+	if (nullptr != firstIndex)
 	{
-		*firstIndex=-1;
+		*firstIndex = -1;
 	}
 	return YSFALSE;
 }
@@ -2190,17 +2190,17 @@ inline YSBOOL YsGenericString <CHARTYPE>::MatchSearchKeyWord(const CHARTYPE sear
 }
 
 template <class CHARTYPE>
-inline YSBOOL YsGenericString <CHARTYPE>::MatchSearchKeyWord(const YsGenericString <CHARTYPE> &searchText) const
+inline YSBOOL YsGenericString <CHARTYPE>::MatchSearchKeyWord(const YsGenericString <CHARTYPE>& searchText) const
 {
 	YsArray <YsGenericString <CHARTYPE> > args;
-	const CHARTYPE blank[3]={' ','\t',0};
-	const CHARTYPE comma[3]={',',';',0};
+	const CHARTYPE blank[3] = { ' ','\t',0 };
+	const CHARTYPE comma[3] = { ',',';',0 };
 
-	searchText.Arguments(args,blank,comma);
+	searchText.Arguments(args, blank, comma);
 
-	for(YSSIZE_T argIdx=0; argIdx<args.GetN(); ++argIdx)
+	for (YSSIZE_T argIdx = 0; argIdx < args.GetN(); ++argIdx)
 	{
-		if(YSTRUE!=FindWord(NULL,args[argIdx]))
+		if (YSTRUE != FindWord(NULL, args[argIdx]))
 		{
 			return YSFALSE;
 		}
@@ -2211,39 +2211,39 @@ inline YSBOOL YsGenericString <CHARTYPE>::MatchSearchKeyWord(const YsGenericStri
 template <class CHARTYPE>
 inline YSRESULT YsGenericString<CHARTYPE>::ConvertEscape(void) const
 {
-	YSRESULT res=YSOK;
-	auto len=Strlen();
-	for(auto i=len-2; 0<=i; --i)
+	YSRESULT res = YSOK;
+	auto len = Strlen();
+	for (auto i = len - 2; 0 <= i; --i)
 	{
-		if('\\'==vv[i])
+		if ('\\' == vv[i])
 		{
-			if('n'==vv[i+1])
+			if ('n' == vv[i + 1])
 			{
-				vv[i]='\n';
+				vv[i] = '\n';
 			}
-			else if('a'==vv[i+1])
+			else if ('a' == vv[i + 1])
 			{
-				vv[i]='\a';
+				vv[i] = '\a';
 			}
-			else if('r'==vv[i+1])
+			else if ('r' == vv[i + 1])
 			{
-				vv[i]='\r';
+				vv[i] = '\r';
 			}
-			else if('t'==vv[i+1])
+			else if ('t' == vv[i + 1])
 			{
-				vv[i]='\t';
+				vv[i] = '\t';
 			}
-			else if('\\'==vv[i+1])
+			else if ('\\' == vv[i + 1])
 			{
 				// vv[i]='\\';
 			}
 			else
 			{
-				res=YSERR;
+				res = YSERR;
 			}
-			for(auto j=i+1; j<len; ++j)
+			for (auto j = i + 1; j < len; ++j)
 			{
-				vv[j]=vv[j+1];
+				vv[j] = vv[j + 1];
 			}
 		}
 	}
@@ -2254,29 +2254,29 @@ template <class CHARTYPE>
 inline YSRESULT YsGenericString<CHARTYPE>::EncodeEscape(void)
 {
 	YsGenericString<CHARTYPE> encoded;
-	for(auto c : *this)
+	for (auto c : *this)
 	{
-		if('\n'==c)
+		if ('\n' == c)
 		{
 			encoded.push_back('\\');
 			encoded.push_back('n');
 		}
-		else if('\a'==c)
+		else if ('\a' == c)
 		{
 			encoded.push_back('\\');
 			encoded.push_back('a');
 		}
-		else if('\t'==c)
+		else if ('\t' == c)
 		{
 			encoded.push_back('\\');
 			encoded.push_back('t');
 		}
-		else if('\r'==c)
+		else if ('\r' == c)
 		{
 			encoded.push_back('\\');
 			encoded.push_back('r');
 		}
-		else if('\"'==c)
+		else if ('\"' == c)
 		{
 			encoded.push_back('\\');
 			encoded.push_back('\"');
@@ -2302,42 +2302,42 @@ inline int YsGenericString<CHARTYPE>::REPLACE(const CHARTYPE fromStr[],const CHA
 }
 template <class CHARTYPE>
 inline int YsGenericString<CHARTYPE>::ExecReplace(
-	    const CHARTYPE fromStr[],
-	    const CHARTYPE toStr[],
-	    int (*cmpfunc)(const CHARTYPE [],const CHARTYPE [],YSSIZE_T))
+	const CHARTYPE fromStr[],
+	const CHARTYPE toStr[],
+	int (*cmpfunc)(const CHARTYPE[], const CHARTYPE[], YSSIZE_T))
 {
-	if(nullptr==fromStr || 0==fromStr[0])
+	if (nullptr == fromStr || 0 == fromStr[0])
 	{
 		return 0;
 	}
 
-	const CHARTYPE nullStr[]={0};
-	if(nullptr==toStr)
+	const CHARTYPE nullStr[] = { 0 };
+	if (nullptr == toStr)
 	{
-		toStr=nullStr;
+		toStr = nullStr;
 	}
 
-	auto nFrom=Strlen(fromStr);
-	auto nTo=Strlen(toStr);
+	auto nFrom = Strlen(fromStr);
+	auto nTo = Strlen(toStr);
 
-	int nRepl=0;
-	for(YSSIZE_T idx=0; idx<=Strlen()-nFrom; )
+	int nRepl = 0;
+	for (YSSIZE_T idx = 0; idx <= Strlen() - nFrom; )
 	{
-		if(0==cmpfunc(vv+idx,fromStr,nFrom))
+		if (0 == cmpfunc(vv + idx, fromStr, nFrom))
 		{
-			if(nFrom<nTo)
+			if (nFrom < nTo)
 			{
-				Insert(idx,' ',nTo-nFrom);
+				Insert(idx, ' ', nTo - nFrom);
 			}
 			else // The new word is shorter.
 			{
-				DeleteRange(idx,nFrom-nTo);
+				DeleteRange(idx, nFrom - nTo);
 			}
-			for(YSSIZE_T j=0; j<nTo; ++j)
+			for (YSSIZE_T j = 0; j < nTo; ++j)
 			{
-				vv[idx+j]=toStr[j];
+				vv[idx + j] = toStr[j];
 			}
-			idx+=nTo;
+			idx += nTo;
 			++nRepl;
 		}
 		else
@@ -2350,29 +2350,29 @@ inline int YsGenericString<CHARTYPE>::ExecReplace(
 }
 
 template <class CHARTYPE>
-inline void YsGenericString<CHARTYPE>::Replace(YSSIZE_T FR,YSSIZE_T N,const CHARTYPE INCOMING[])
+inline void YsGenericString<CHARTYPE>::Replace(YSSIZE_T FR, YSSIZE_T N, const CHARTYPE INCOMING[])
 {
-	auto INCOMINGLEN=Strlen(INCOMING);
-	if(this->Strlen()<FR)
+	auto INCOMINGLEN = Strlen(INCOMING);
+	if (this->Strlen() < FR)
 	{
-		FR=Strlen();
+		FR = Strlen();
 	}
-	if(this->Strlen()<FR+N)
+	if (this->Strlen() < FR + N)
 	{
-		N=Strlen()-FR;
+		N = Strlen() - FR;
 	}
 
-	if(N<INCOMINGLEN)
+	if (N < INCOMINGLEN)
 	{
-		Insert(FR,' ',INCOMINGLEN-N);
+		Insert(FR, ' ', INCOMINGLEN - N);
 	}
 	else
 	{
-		DeleteRange(FR,N-INCOMINGLEN);
+		DeleteRange(FR, N - INCOMINGLEN);
 	}
-	for(YSSIZE_T j=0; j<INCOMINGLEN; ++j)
+	for (YSSIZE_T j = 0; j < INCOMINGLEN; ++j)
 	{
-		vv[FR+j]=INCOMING[j];
+		vv[FR + j] = INCOMING[j];
 	}
 }
 
@@ -2385,29 +2385,29 @@ int YsGenericString<CHARTYPE>::Atoi(void) const
 template <class CHARTYPE>
 long long int YsGenericString<CHARTYPE>::Atol(void) const
 {
-	long long int value=0;
-	int sign=1;
-	long long int ptr=0;
-	while(ptr<Strlen() && (vv[ptr]==' ' || vv[ptr]=='\t'))
+	long long int value = 0;
+	int sign = 1;
+	long long int ptr = 0;
+	while (ptr < Strlen() && (vv[ptr] == ' ' || vv[ptr] == '\t'))
 	{
 		++ptr;
 	}
-	switch(vv[ptr])
+	switch (vv[ptr])
 	{
 	case '+':
 		++ptr;
 		break;
 	case '-':
-		sign=-1;
+		sign = -1;
 		++ptr;
 		break;
 	default:
 		break;
 	}
-	value=GetRawNumber<long long int>(ptr);
-	if(1!=sign)
+	value = GetRawNumber<long long int>(ptr);
+	if (1 != sign)
 	{
-		value=-value;
+		value = -value;
 	}
 	return value;
 }
@@ -2432,44 +2432,44 @@ template <class CHARTYPE>
 template <class Float_Type>
 Float_Type YsGenericString<CHARTYPE>::AtoReal(void) const
 {
-	long long int aboveDecimal=0,add=1;
-	int sign=1;
-	long long int ptr=0;
-	while(ptr<Strlen() && (vv[ptr]==' ' || vv[ptr]=='\t'))
+	long long int aboveDecimal = 0, add = 1;
+	int sign = 1;
+	long long int ptr = 0;
+	while (ptr < Strlen() && (vv[ptr] == ' ' || vv[ptr] == '\t'))
 	{
 		++ptr;
 	}
-	switch(vv[ptr])
+	switch (vv[ptr])
 	{
 	case '+':
 		++ptr;
 		break;
 	case '-':
-		sign=-1;
+		sign = -1;
 		++ptr;
 		break;
 	default:
 		break;
 	}
 
-	aboveDecimal=GetRawNumber<long long int>(ptr);
+	aboveDecimal = GetRawNumber<long long int>(ptr);
 
-	long long belowDecimal=0;
-	double belowDecimalDenom=1.0;
-	add=1;
-	if(ptr<Strlen() && '.'==vv[ptr])
+	long long belowDecimal = 0;
+	double belowDecimalDenom = 1.0;
+	add = 1;
+	if (ptr < Strlen() && '.' == vv[ptr])
 	{
 		++ptr;
-		while(ptr<Strlen())
+		while (ptr < Strlen())
 		{
-			if('0'<=vv[ptr] && vv[ptr]<='9')
+			if ('0' <= vv[ptr] && vv[ptr] <= '9')
 			{
-				long long int n=vv[ptr]-'0';
-				belowDecimal*=10;
-				belowDecimal+=n;
-				belowDecimalDenom*=10.0;
+				long long int n = vv[ptr] - '0';
+				belowDecimal *= 10;
+				belowDecimal += n;
+				belowDecimalDenom *= 10.0;
 			}
-			else if(','!=vv[ptr] || '.'==vv[ptr])
+			else if (',' != vv[ptr] || '.' == vv[ptr])
 			{
 				break;
 			}
@@ -2477,56 +2477,56 @@ Float_Type YsGenericString<CHARTYPE>::AtoReal(void) const
 		}
 	}
 
-	double base=(double)aboveDecimal+((double)belowDecimal/belowDecimalDenom);
-	if(sign<0)
+	double base = (double)aboveDecimal + ((double)belowDecimal / belowDecimalDenom);
+	if (sign < 0)
 	{
-		base=-base;
+		base = -base;
 	}
 
-	if(ptr<Strlen() && ('e'==vv[ptr] || 'E'==vv[ptr]))
+	if (ptr < Strlen() && ('e' == vv[ptr] || 'E' == vv[ptr]))
 	{
-		int expoSign=1;
+		int expoSign = 1;
 		++ptr;
 
-		switch(vv[ptr])
+		switch (vv[ptr])
 		{
 		case '+':
 			++ptr;
 			break;
 		case '-':
-			expoSign=-1;
+			expoSign = -1;
 			++ptr;
 			break;
 		default:
 			break;
 		}
 
-		int expo=GetRawNumber<int>(ptr);
+		int expo = GetRawNumber<int>(ptr);
 		double scaled;
-		if(expo<20)
+		if (expo < 20)
 		{
-			long long int scale=1;
-			for(int i=0; i<expo; ++i)
+			long long int scale = 1;
+			for (int i = 0; i < expo; ++i)
 			{
-				scale*=10;
+				scale *= 10;
 			}
-			scaled=(Float_Type)scale;
+			scaled = (Float_Type)scale;
 		}
 		else
 		{
-			scaled=(Float_Type)1;
-			for(int i=0; i<expo; ++i)
+			scaled = (Float_Type)1;
+			for (int i = 0; i < expo; ++i)
 			{
-				scaled*=(Float_Type)10;
+				scaled *= (Float_Type)10;
 			}
 		}
-		if(0<expoSign)
+		if (0 < expoSign)
 		{
-			return (Float_Type)(base*scaled);
+			return (Float_Type)(base * scaled);
 		}
 		else
 		{
-			return (Float_Type)(base/scaled);
+			return (Float_Type)(base / scaled);
 		}
 	}
 	else
@@ -2537,18 +2537,18 @@ Float_Type YsGenericString<CHARTYPE>::AtoReal(void) const
 
 template <class CHARTYPE>
 template <class Int_Type>
-Int_Type YsGenericString<CHARTYPE>::GetRawNumber(long long int &ptr) const
+Int_Type YsGenericString<CHARTYPE>::GetRawNumber(long long int& ptr) const
 {
-	Int_Type sum=0;
-	while(ptr<Strlen())
+	Int_Type sum = 0;
+	while (ptr < Strlen())
 	{
-		if('0'<=vv[ptr] && vv[ptr]<='9')
+		if ('0' <= vv[ptr] && vv[ptr] <= '9')
 		{
-			Int_Type n=vv[ptr]-'0';
-			sum*=10;
-			sum+=n;
+			Int_Type n = vv[ptr] - '0';
+			sum *= 10;
+			sum += n;
 		}
-		else if(','!=vv[ptr] || '.'==vv[ptr])
+		else if (',' != vv[ptr] || '.' == vv[ptr])
 		{
 			break;
 		}
@@ -2656,10 +2656,10 @@ public:
 	int Printf(const char *fom,...);
 
 	/*! For better interoperability with STL */
-	inline YsString substr(YSSIZE_T pos=0,YSSIZE_T len=npos)
+	inline YsString substr(YSSIZE_T pos = 0, YSSIZE_T len = npos)
 	{
 		YsString str;
-		this->GetSubset(str,pos,len);
+		this->GetSubset(str, pos, len);
 		return str;
 	}
 	/*! For better interoperability with STL */
@@ -2675,30 +2675,30 @@ public:
 		return *this;
 	}
 	/*! For better interoperability with STL */
-	inline YsString operator+(const YsString &incoming) const
+	inline YsString operator+(const YsString& incoming) const
 	{
-		auto copy=*this;
+		auto copy = *this;
 		copy.Append(incoming);
 		return copy;
 	}
 	/*! For better interoperability with STL */
 	inline YsString operator+(const char incoming[]) const
 	{
-		auto copy=*this;
+		auto copy = *this;
 		copy.Append(incoming);
 		return copy;
 	}
 	/*! For better interoperability with STL */
-	inline YsString &replace(YSSIZE_T pos,YSSIZE_T len,const YsString &str)
+	inline YsString& replace(YSSIZE_T pos, YSSIZE_T len, const YsString& str)
 	{
-		if(this==&str)
+		if (this == &str)
 		{
-			auto copy=str;
-			return replace(pos,len,copy);
+			auto copy = str;
+			return replace(pos, len, copy);
 		}
 		else
 		{
-			Replace(pos,len,str);
+			Replace(pos, len, str);
 			return *this;
 		}
 	}
@@ -2721,7 +2721,7 @@ public:
 template <class CHARTYPE>
 inline YSRESULT YsGenericString <CHARTYPE>::GetUTF8String(class YsString &outStr) const
 {
-	outStr.EncodeUTF8 <CHARTYPE> (vv);
+	outStr.EncodeUTF8 <CHARTYPE> (vv.data());
 	return YSOK;
 }
 
@@ -2734,12 +2734,12 @@ inline YsString::YsString(const char from[])  // Isn't it automatic?
 	Set(from);
 }
 
-inline YsString::YsString(const YsString &from)
+inline YsString::YsString(const YsString& from)
 {
-	YsArray <char,16>::Set(from.Strlen()+1,from.GetArray());
+	YsArray <char, 16>::Set(from.Strlen() + 1, from.GetArray());
 }
 
-inline YsString &YsString::operator=(const YsString &from)
+inline YsString& YsString::operator=(const YsString& from)
 {
 	YsGenericString <char>::Set(from);
 	return *this;
@@ -2752,16 +2752,16 @@ inline YsString YsString::GetExtension(void) const
 	return ext;
 }
 
-inline YsString YsString::Subset(YSSIZE_T top,YSSIZE_T length) const
+inline YsString YsString::Subset(YSSIZE_T top, YSSIZE_T length) const
 {
 	YsString sub;
-	YsGenericString <char>::GetSubset(sub,top,length);
+	YsGenericString <char>::GetSubset(sub, top, length);
 	return sub;
 }
 
-inline YsString YsString::CleanSubset(YSSIZE_T top,YSSIZE_T length) const
+inline YsString YsString::CleanSubset(YSSIZE_T top, YSSIZE_T length) const
 {
-	auto sub=Subset(top,length);
+	auto sub = Subset(top, length);
 	sub.DeleteTailSpace();
 	sub.DeleteHeadSpace();
 	return sub;
@@ -2778,61 +2778,61 @@ inline YsString &YsString::operator=(YsString &&str)
 	return *this;
 }
 
-inline YsString &YsString::MoveFrom(YsString &incoming)
+inline YsString& YsString::MoveFrom(YsString& incoming)
 {
 	YsGenericString <char>::MoveFrom(incoming); // Is supposed to fall back to YsArray <char,16>::MoveFrom
 	return *this;
 }
 
 template <const int N>
-inline YSRESULT YsString::Arguments(YsArray <YsString,N> &args,const char *blank,const char *comma) const
+inline YSRESULT YsString::Arguments(YsArray <YsString, N>& args, const char* blank, const char* comma) const
 {
-	YsGenericString <char>::Arguments <YsString,N> (args,blank,comma);
+	YsGenericString <char>::Arguments <YsString, N>(args, blank, comma);
 	return YSOK;
 }
 
-inline YsArray <YsString> YsString::Argv(const char *blank,const char *comma) const
+inline YsArray <YsString> YsString::Argv(const char* blank, const char* comma) const
 {
 	YsArray <YsString> argv;
-	Arguments(argv,blank,comma);
+	Arguments(argv, blank, comma);
 	return argv;
 }
 
-inline YSRESULT YsString::SeparatePathFile(YsString &pth,YsString &fil) const
+inline YSRESULT YsString::SeparatePathFile(YsString& pth, YsString& fil) const
 {
-	int cutPtr,seekPtr;
+	int cutPtr, seekPtr;
 
-	cutPtr=0;
+	cutPtr = 0;
 
 	/* Skip Drive Name */
-	if(vv[0]!=0 && vv[1]==':')
+	if (vv[0] != 0 && vv[1] == ':')
 	{
-		cutPtr+=2;
+		cutPtr += 2;
 	}
 
 	/* scan until nul Stopper */
-	for(seekPtr=cutPtr; vv[seekPtr]!=0; seekPtr++)
+	for (seekPtr = cutPtr; vv[seekPtr] != 0; seekPtr++)
 	{
-		if((vv[seekPtr]&0x80)!=0 && vv[seekPtr+1]!=0)  // 2 byte char
+		if ((vv[seekPtr] & 0x80) != 0 && vv[seekPtr + 1] != 0)  // 2 byte char
 		{
 			seekPtr++;
 		}
-		else if(vv[seekPtr]=='\\' || vv[seekPtr]=='/' || vv[seekPtr]==':')
+		else if (vv[seekPtr] == '\\' || vv[seekPtr] == '/' || vv[seekPtr] == ':')
 		{
-			cutPtr=seekPtr+1;
+			cutPtr = seekPtr + 1;
 		}
 	}
 
 	/* cutPtr points *tmp  or after ':' or after last '\\' */
-	fil.Set(vv+cutPtr);
+	fil.Set(vv.data() + cutPtr);
 
 	int i;
-	pth.Resize(cutPtr+1);
-	for(i=0; i<cutPtr; i++)
+	pth.Resize(cutPtr + 1);
+	for (i = 0; i < cutPtr; i++)
 	{
-		pth.vv[i]=vv[i];
+		pth.vv[i] = vv[i];
 	}
-	pth.vv[cutPtr]=0;
+	pth.vv[cutPtr] = 0;
 
 	return YSOK;
 }
@@ -2840,66 +2840,66 @@ inline YSRESULT YsString::SeparatePathFile(YsString &pth,YsString &fil) const
 inline void YsString::DeleteTailSpace(void)
 {
 	unsigned int chr;
-	YSSIZE_T i,cut,len;
+	YSSIZE_T i, cut, len;
 
-	len=Strlen();
-	cut=0;
-	for(i=0; i<len; i++)
+	len = Strlen();
+	cut = 0;
+	for (i = 0; i < len; i++)
 	{
-		chr=((unsigned char *)vv)[i];
+		chr = ((unsigned char*)vv.data())[i];
 
-		if((0x81<=chr && chr<=0x9f) || 0xe0<=chr)
+		if ((0x81 <= chr && chr <= 0x9f) || 0xe0 <= chr)
 		{
-			cut=i+2;
+			cut = i + 2;
 			i++;
 		}
-		else if(isprint(chr) && chr!=' ' && chr!='\t')
+		else if (isprint(chr) && chr != ' ' && chr != '\t')
 		{
-			cut=i+1;
+			cut = i + 1;
 		}
 	}
 
-	if(cut<len)
+	if (cut < len)
 	{
-		vv[cut]=0;
-		Resize(cut+1);
+		vv[cut] = 0;
+		Resize(cut + 1);
 	}
 }
 
 inline void YsString::Capitalize(void)
 {
-	for(YSSIZE_T i=0; vv[i]!=0; i++)
+	for (YSSIZE_T i = 0; vv[i] != 0; i++)
 	{
-		if((0x81<=((unsigned char*)vv)[i] && ((unsigned char*)vv)[i]<=0x9f) || 0xe0<=((unsigned char*)vv)[i])
+		if ((0x81 <= ((unsigned char*)vv.data())[i] && ((unsigned char*)vv.data())[i] <= 0x9f) || 0xe0 <= ((unsigned char*)vv.data())[i])
 		{
 			i++;
-			if(vv[i]==0)
+			if (vv[i] == 0)
 			{
 				break;
 			}
 		}
-		else if('a'<=vv[i] && vv[i]<='z')
+		else if ('a' <= vv[i] && vv[i] <= 'z')
 		{
-			vv[i]=vv[i]+'A'-'a';
+			vv[i] = vv[i] + 'A' - 'a';
 		}
 	}
 }
 
 inline void YsString::Uncapitalize(void)
 {
-	for(YSSIZE_T i=0; vv[i]!=0; i++)
+	for (YSSIZE_T i = 0; vv[i] != 0; i++)
 	{
-		if((0x81<=((unsigned char*)vv)[i] && ((unsigned char*)vv)[i]<=0x9f) || 0xe0<=((unsigned char*)vv)[i])
+		if ((0x81 <= ((unsigned char*)vv.data())[i] && ((unsigned char*)vv.data())[i] <= 0x9f) || 0xe0 <= ((unsigned char*)vv.data())[i])
 		{
 			i++;
-			if(vv[i]==0)
+			if (vv[i] == 0)
 			{
 				break;
 			}
 		}
-		else if('A'<=vv[i] && vv[i]<='Z')
+		else if ('A' <= vv[i] && vv[i] <= 'Z')
 		{
-			vv[i]=vv[i]+'a'-'A';
+			vv[i] = vv[i] + 'a' - 'A';
 		}
 	}
 }
@@ -2907,18 +2907,18 @@ inline void YsString::Uncapitalize(void)
 template <class WCHARTYPE>
 inline void YsString::EncodeUTF8(const WCHARTYPE wStr[])
 {
-	if(NULL!=wStr)
+	if (NULL != wStr)
 	{
-		YSSIZE_T l=0;
-		for(l=0; wStr[l]!=0; l++)
+		YSSIZE_T l = 0;
+		for (l = 0; wStr[l] != 0; l++)
 		{
 		}
 
-		size_t lOut=l*6+1;  // Worst case six-byte encoding times N wchars plus terminator.
-		YsArray <char,16>::Resize(lOut);
+		size_t lOut = l * 6 + 1;  // Worst case six-byte encoding times N wchars plus terminator.
+		YsArray <char, 16>::Resize(lOut);
 
-		size_t nByte=YsWCharToUTF8(lOut,vv,wStr); // nByte includes zero terminator.
-		YsArray <char,16>::Resize(nByte);
+		size_t nByte = YsWCharToUTF8(lOut, vv.data(), wStr); // nByte includes zero terminator.
+		YsArray <char, 16>::Resize(nByte);
 	}
 	else
 	{
@@ -2926,77 +2926,77 @@ inline void YsString::EncodeUTF8(const WCHARTYPE wStr[])
 	}
 }
 
-inline bool operator==(const YsString &str1,const YsString &str2)
+inline bool operator==(const YsString& str1, const YsString& str2)
 {
-	return (strcmp(str1,str2)==0);
+	return (strcmp(str1, str2) == 0);
 }
 
-inline bool operator!=(const YsString &str1,const YsString &str2)
+inline bool operator!=(const YsString& str1, const YsString& str2)
 {
-	return (strcmp(str1,str2)!=0);
+	return (strcmp(str1, str2) != 0);
 }
 
-inline bool operator<(const YsString &str1,const YsString &str2)
+inline bool operator<(const YsString& str1, const YsString& str2)
 {
 	// str1<str2   <=>  str1-str2<0
-	return (strcmp(str1,str2)<0);
+	return (strcmp(str1, str2) < 0);
 }
 
-inline bool operator>(const YsString &str1,const YsString &str2)
+inline bool operator>(const YsString& str1, const YsString& str2)
 {
 	// str1>str2   <=>  str1-str2>0
-	return (strcmp(str1,str2)>0);
+	return (strcmp(str1, str2) > 0);
 }
 
-inline bool operator<=(const YsString &str1,const YsString &str2)
+inline bool operator<=(const YsString& str1, const YsString& str2)
 {
-	return (strcmp(str1,str2)<=0);
+	return (strcmp(str1, str2) <= 0);
 }
 
-inline bool operator>=(const YsString &str1,const YsString &str2)
+inline bool operator>=(const YsString& str1, const YsString& str2)
 {
-	return (strcmp(str1,str2)>=0);
+	return (strcmp(str1, str2) >= 0);
 }
 
-inline const char *YsString::Fgets(FILE *fp)
+inline const char* YsString::Fgets(FILE* fp)
 {
 	char buf[256];
-	YsArray <char,16>::Set(0,NULL);
-	while(fgets(buf,255,fp)!=NULL)
+	YsArray <char, 16>::Set(0, NULL);
+	while (fgets(buf, 255, fp) != NULL)
 	{
-		YSBOOL eol=YSFALSE;
+		YSBOOL eol = YSFALSE;
 
-		int len=(int)strlen(buf);
-		while(0<len && (0x0d==buf[len-1] || 0x0a==buf[len-1]))
+		int len = (int)strlen(buf);
+		while (0 < len && (0x0d == buf[len - 1] || 0x0a == buf[len - 1]))
 		{
-			eol=YSTRUE;
-			buf[len-1]=0;
+			eol = YSTRUE;
+			buf[len - 1] = 0;
 			--len;
 		}
 
-		if(YSTRUE==eol)
+		if (YSTRUE == eol)
 		{
-			YsArray <char,16>::Append(len+1,buf);
+			YsArray <char, 16>::Append(len + 1, buf);
 			break;
 		}
 		else
 		{
-			YsArray <char,16>::Append(len,buf);
+			YsArray <char, 16>::Append(len, buf);
 		}
 	}
 
-	if(GetN()==0)
+	if (GetN() == 0)
 	{
 		Set("");
 		return NULL;
 	}
 
-	if(vv[GetN()-1]!=0)  // In case /n is not at the end of the file 2006/10/26
+	if (vv[GetN() - 1] != 0)  // In case /n is not at the end of the file 2006/10/26
 	{
-		YsArray <char,16>::Append(0);
+		YsArray <char, 16>::Append(0);
 	}
 
-	return vv;
+	return vv.data();
 }
 
 ////////////////////////////////////////////////////////////
