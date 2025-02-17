@@ -372,7 +372,9 @@ class YsFixedLengthArray
 public:
 	/*! Array buffer */
 	//T dat[_size];
-	std::vector<T> dat = std::vector<T>(_size);
+	std::vector<T> dat;
+
+	YsFixedLengthArray() : dat(_size) {}
 
 	/*! Operator for accessing the array. */
 	inline const T &operator[](int idx) const
@@ -422,8 +424,11 @@ class YsArrayPreAlloc
 {
 private:
 	//T pre[MinLen];
-	std::vector<T> pre = std::vector<T>(MinLen);
+	std::vector<T> pre;
 public:
+
+	YsArrayPreAlloc() : pre(MinLen) {}
+
 	inline T *Prealloc(void)
 	{
 		return pre.data();
@@ -1524,22 +1529,24 @@ inline YSRESULT YsArray <T,MinimumLength,SizeType>::Shrink(void)
 }
 // \endcond
 
+//TODO: FIX THESE CONSTRUCTORS - vector index out of range line 1884
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray()
+YsArray<T,MinimumLength,SizeType>::YsArray() : vv()
 {
-	vv = std::vector<T>();
+	//vv = std::vector<T>();
 }
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(SizeType nv,const T v[])
+YsArray<T,MinimumLength,SizeType>::YsArray(SizeType nv,const T v[]) : vv(nv)
 {
-	vv = std::vector<T>();
+	vv.assign(v, v + nv);
+	//vv = std::vector<T>(nv);
 }
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(std::nullptr_t,SizeType N)
+YsArray<T,MinimumLength,SizeType>::YsArray(std::nullptr_t,SizeType N) : vv(N)
 {
-	vv = std::vector<T>(N);
+	//vv = std::vector<T>(N);
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1548,9 +1555,9 @@ YsArray<T,MinimumLength,SizeType>::YsArray(std::initializer_list <T> initList) :
 
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(const YsArray <T,MinimumLength,SizeType> &from)
+YsArray<T,MinimumLength,SizeType>::YsArray(const YsArray <T,MinimumLength,SizeType> &from) : vv(from.size())
 {
-	vv = std::vector<T>(from.size());
+	//vv = std::vector<T>(from.size());
 	for (YSSIZE_T i = 0; i < from.size(); i++)
 	{
 		vv[i] = from[i];
@@ -1558,9 +1565,9 @@ YsArray<T,MinimumLength,SizeType>::YsArray(const YsArray <T,MinimumLength,SizeTy
 }
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(const YsConstArrayMask <T> &from)
+YsArray<T,MinimumLength,SizeType>::YsArray(const YsConstArrayMask <T> &from) : vv(from.GetN())
 {
-	vv = std::vector<T>(from.GetN());
+	//vv = std::vector<T>(from.GetN());
 	for (YSSIZE_T i = 0; i < from.GetN(); i++)
 	{
 		vv[i] = from[i];
@@ -1568,9 +1575,9 @@ YsArray<T,MinimumLength,SizeType>::YsArray(const YsConstArrayMask <T> &from)
 }
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength,SizeType> &&incoming)
+YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength,SizeType> &&incoming) : vv(incoming.size())
 {
-	vv = std::vector<T>(incoming.size());
+	//vv = std::vector<T>(incoming.size());
 	for (YSSIZE_T i = 0; i < incoming.size(); i++)
 	{
 		vv[i] = incoming[i];
@@ -1580,9 +1587,9 @@ YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength,SizeType> &&
 
 template <class T,const int MinimumLength,class SizeType>
 template <const int MinimumLength2,class SizeType2>
-YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength2,SizeType2> &&incoming)
+YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength2,SizeType2> &&incoming) : vv(incoming.size())
 {
-	vv = std::vector<T>(incoming.size());
+	//vv = std::vector<T>(incoming.size());
 	for (YSSIZE_T i = 0; i < incoming.size(); i++)
 	{
 		vv[i] = incoming[i]
