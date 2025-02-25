@@ -95,7 +95,7 @@ public:
 		return dat[idx];
 	}
 
-	std::vector<T> GetVector()
+	const std::vector<T> GetVector() const
 	{
 		return dat;
 	}
@@ -408,11 +408,17 @@ public:
 		this->dat=incoming;
 	}
 
-	inline YsConstArrayMask(const YsArrayMask <T> &arrayMask)
+	inline YsConstArrayMask(const YsArrayMask <T> &arrayMask) : dat(arrayMask.GetVector()), len(arrayMask.size())
 	{
-		this->len=(YSSIZE_T)arrayMask.size();
+		//this->len=(YSSIZE_T)arrayMask.size();
 		//this->dat.assign(arrayMask.data(), arrayMask.data() + arrayMask.size());
-		this->dat = arrayMask.GetVector();
+
+		//YSSIZE_T n = arrayMask.size();
+		//this->dat.resize(n);
+		//for (YSSIZE_T i = 0; i < n; i++)
+		//{
+		//	this->dat[i] = arrayMask[i];
+		//}
 	}
 
 	/*! Operator for accessing the array. */

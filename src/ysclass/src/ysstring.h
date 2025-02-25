@@ -1535,7 +1535,7 @@ inline void YsGenericString<CHARTYPE>::DropSingleLineComment(const CHARTYPE symb
 		switch(state)
 		{
 		case NORMAL:
-			if(0==YsGenericString<CHARTYPE>::Strncmp(vv + ptr,symbol,symbolLen))
+			if(0==YsGenericString<CHARTYPE>::Strncmp(vv.data() + ptr, symbol, symbolLen))
 			{
 				SetLength(ptr);
 				return;
