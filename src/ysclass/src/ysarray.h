@@ -1592,7 +1592,7 @@ YsArray<T,MinimumLength,SizeType>::YsArray(YsArray <T,MinimumLength2,SizeType2> 
 	//vv = std::vector<T>(incoming.size());
 	for (YSSIZE_T i = 0; i < incoming.size(); i++)
 	{
-		vv[i] = incoming[i]
+		vv[i] = incoming[i];
 	}
 	incoming.ClearDeep();
 }
@@ -1659,8 +1659,9 @@ YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(YsArray <T,MinimumLength,SizeType> &&incoming)
 {
-	vv = incoming.vv;
-	incoming.CleanUp();
+	this->MoveFrom(incoming);
+	//vv = incoming.vv;
+	//incoming.CleanUp();
 
 	return *this;
 }
@@ -1669,8 +1670,9 @@ template <class T,const int MinimumLength,class SizeType>
 template <const int MinimumLength2,class SizeType2>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(YsArray <T,MinimumLength2,SizeType2> &&incoming)
 {
-	vv = incoming.vv;
-	incoming.CleanUp();
+	this->MoveFrom(incoming);
+	//vv = incoming.vv;
+	//incoming.CleanUp();
 
 	return *this;
 }

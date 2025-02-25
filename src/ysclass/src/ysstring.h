@@ -708,7 +708,7 @@ public:
 	    Returns YSOK if there is no error.
 	    Returns YSERR if unrecognized escape is included.
 	*/
-	inline YSRESULT ConvertEscape(void) const;
+	inline YSRESULT ConvertEscape(void);
 
 	/*! Converts control codes to "\n", "\a", "\r", "\t".  Also "\" to "\\" and '"' to '\"'. */
 	inline YSRESULT EncodeEscape(void);
@@ -2209,7 +2209,7 @@ inline YSBOOL YsGenericString <CHARTYPE>::MatchSearchKeyWord(const YsGenericStri
 }
 
 template <class CHARTYPE>
-inline YSRESULT YsGenericString<CHARTYPE>::ConvertEscape(void) const
+inline YSRESULT YsGenericString<CHARTYPE>::ConvertEscape(void)
 {
 	YSRESULT res = YSOK;
 	auto len = Strlen();
