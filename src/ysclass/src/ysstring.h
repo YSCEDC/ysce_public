@@ -2323,7 +2323,7 @@ inline int YsGenericString<CHARTYPE>::ExecReplace(
 	int nRepl = 0;
 	for (YSSIZE_T idx = 0; idx <= Strlen() - nFrom; )
 	{
-		if (0 == cmpfunc(vv + idx, fromStr, nFrom))
+		if (0 == cmpfunc(vv.data() + idx, fromStr, nFrom))
 		{
 			if (nFrom < nTo)
 			{

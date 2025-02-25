@@ -34,7 +34,7 @@ class YsArrayMask
 {
 private:
 	YSSIZE_T len;
-	T *dat;
+	std::vector<T> dat;
 
 public:
 	/*! Constructor to construct the object from a length and a pointer.
@@ -42,7 +42,7 @@ public:
 	YsArrayMask(YSSIZE_T len,T *dat)
 	{
 		this->len=len;
-		this->dat=dat;
+		this->dat.assign(dat, dat + len);
 	}
 
 // Want to make it a cast operator in YsArray
@@ -56,7 +56,7 @@ public:
 	YsArrayMask(std::vector <T> &incoming)
 	{
 		this->len=(YSSIZE_T)incoming.size();
-		this->dat=incoming.data();
+		this->dat=incoming;
 	}
 
 	/*! Returns a subset of this array, (*this)[top]...(*this)[top+length-1].
@@ -95,16 +95,21 @@ public:
 		return dat[idx];
 	}
 
+	std::vector<T> GetVector()
+	{
+		return dat;
+	}
+
 	/*! Cast operator that returns constant pointer to the array. */
 	operator const T *() const
 	{
-		return dat;
+		return dat.data();
 	}
 
 	/*! Cast operator that returns non-constant pointer to the array. */
 	operator T *()
 	{
-		return dat;
+		return dat.data();
 	}
 
 	/*! Returns the number of items in the array.
@@ -377,15 +382,16 @@ class YsConstArrayMask
 {
 private:
 	YSSIZE_T len;
-	const T *dat;
+
+	const std::vector<T> dat;
 
 public:
 	/*! Constructor that constructs this object from a length and a pointer.
 	*/
-	YsConstArrayMask(YSSIZE_T len,const T *dat)
+	YsConstArrayMask(YSSIZE_T len,const T *dat) : dat(dat, dat + len)
 	{
 		this->len=len;
-		this->dat=dat;
+		//this->dat.assign(dat, dat + len);
 	}
 
 // Want to make it a cast operator in YsArray
@@ -399,13 +405,14 @@ public:
 	inline YsConstArrayMask(const std::vector <T> &incoming)
 	{
 		this->len=(YSSIZE_T)incoming.size();
-		this->dat=incoming.data();
+		this->dat=incoming;
 	}
 
 	inline YsConstArrayMask(const YsArrayMask <T> &arrayMask)
 	{
 		this->len=(YSSIZE_T)arrayMask.size();
-		this->dat=arrayMask.data();
+		//this->dat.assign(arrayMask.data(), arrayMask.data() + arrayMask.size());
+		this->dat = arrayMask.GetVector();
 	}
 
 	/*! Operator for accessing the array. */
@@ -414,16 +421,21 @@ public:
 		return dat[idx];
 	}
 
+	std::vector<T> GetVector()
+	{
+		return dat;
+	}
+
 	/*! Cast operator that returns constant pointer to the array. */
 	operator const T *() const
 	{
-		return dat;
+		return dat.data();
 	}
 
 	/*! Returns the pointer to the array. */
 	const T *GetArray(void) const
 	{
-		return dat;
+		return dat.data();
 	}
 
 	/*! Returns a subset of this array, (*this)[top]...(*this)[top+length-1].
@@ -568,7 +580,7 @@ public:
 	}
 	const T *data(void) const
 	{
-		return dat;
+		return dat.data();
 	}
 };
 

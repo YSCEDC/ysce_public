@@ -1498,7 +1498,7 @@ inline YSRESULT YsArray<T, MinimumLength, SizeType>::Alloc(SizeType n, YSBOOL cp
 {
 	try
 	{
-		vv.reserve(n);
+		vv.resize(n);
 	}
 	catch (...)
 	{
@@ -1513,7 +1513,7 @@ inline YSRESULT YsArray<T,MinimumLength,SizeType>::AllocWithoutCopy(SizeType n)
 	try
 	{
 		vv.clear();
-		vv.reserve(n);
+		vv.resize(n);
 	}
 	catch (...)
 	{
@@ -1704,14 +1704,22 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::Set(SizeType NV,const T V[])
 		}
 		else
 		{
-			if (V != NULL)
+			if (Alloc(NV, YSFALSE) == YSOK)
 			{
-				for (SizeType i = 0; i < NV; i++)
+				if (V != NULL)
 				{
-					vv[i] = V[i]; // 2014/09/26 Serious error was in here.  V[i] was casted to (T &&), although T is const.
+					for (SizeType i = 0; i < NV; i++)
+					{
+						vv[i] = V[i]; // 2014/09/26 Serious error was in here.  V[i] was casted to (T &&), although T is const.
+					}
 				}
+				return YSOK;
 			}
-			return YSOK;
+			else
+			{
+				YsErrOut("YsArray::Set()\n  Low Memory Warning!!\n");
+				return YSERR;
+			}
 		}
 	}
 	catch (...)
@@ -1774,6 +1782,7 @@ YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::CopyFrom
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::MoveFrom(YsArray <T,MinimumLength,SizeType> &incoming)
 {
+	this->Set(incoming.GetN(), NULL);
 	for (YSSIZE_T idx = 0; idx < incoming.GetN(); ++idx)
 	{
 		vv[idx] = (T&&)(incoming[idx]);
