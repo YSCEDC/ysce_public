@@ -30,6 +30,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <chrono>
 
 #ifdef _WIN32
 	#include <io.h>
@@ -492,7 +493,9 @@ long long int FsPassedTime(void)
 
 long long int FsSubSecondTimer(void)
 {
-	return time(NULL)*1000;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    ).count();
 }
 
 int FsInkey(void)
