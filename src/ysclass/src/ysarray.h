@@ -700,7 +700,7 @@ public:
 
 	/*! Default destructor.
 	    */
-	~YsArray();
+	//~YsArray();
 
 	/*! Default copy operator that safely copies object from the incoming YsArray.
 	    */
@@ -1498,12 +1498,12 @@ inline YSRESULT YsArray<T, MinimumLength, SizeType>::Alloc(SizeType n, YSBOOL cp
 {
 	try
 	{
-		vv.resize(n);
-
 		if (!cpy)
 		{
 			vv.clear();
 		}
+
+		vv.resize(n);
 	}
 	catch (...)
 	{
@@ -1533,10 +1533,9 @@ YsArray<T,MinimumLength,SizeType>::YsArray() : vv()
 }
 
 template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::YsArray(SizeType nv,const T v[]) : vv(nv)
+YsArray<T,MinimumLength,SizeType>::YsArray(SizeType nv,const T v[]) : vv()
 {
-	vv.assign(v, v + nv);
-	//vv = std::vector<T>(nv);
+	Set(nv, v);
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1604,9 +1603,9 @@ YsArray<T,MinimumLength,SizeType>::YsArray(const StorageClass &incoming)
 	}
 }
 
-template <class T,const int MinimumLength,class SizeType>
-YsArray<T,MinimumLength,SizeType>::~YsArray()
-{}
+//template <class T,const int MinimumLength,class SizeType>
+//YsArray<T,MinimumLength,SizeType>::~YsArray()
+//{}
 
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray<T,MinimumLength,SizeType>::operator=(const YsArray <T,MinimumLength,SizeType> &from)
@@ -1769,6 +1768,7 @@ YsArray <T,MinimumLength,SizeType> YsArray<T,MinimumLength,SizeType>::operator+(
 template <class T,const int MinimumLength,class SizeType>
 YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::CopyFrom(const YsConstArrayMask <T> &from)
 {
+	vv.resize(from.size());
 	for (SizeType i = 0; i < from.size(); i++)
 	{
 		vv[i] = from[i];
