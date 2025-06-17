@@ -1499,6 +1499,11 @@ inline YSRESULT YsArray<T, MinimumLength, SizeType>::Alloc(SizeType n, YSBOOL cp
 	try
 	{
 		vv.resize(n);
+
+		if (!cpy)
+		{
+			vv.clear();
+		}
 	}
 	catch (...)
 	{
@@ -1510,16 +1515,7 @@ inline YSRESULT YsArray<T, MinimumLength, SizeType>::Alloc(SizeType n, YSBOOL cp
 template <class T,const int MinimumLength,class SizeType>
 inline YSRESULT YsArray<T,MinimumLength,SizeType>::AllocWithoutCopy(SizeType n)
 {
-	try
-	{
-		vv.clear();
-		vv.resize(n);
-	}
-	catch (...)
-	{
-		return YSERR;
-	}
-	return YSOK;
+	return Alloc(n, YSFALSE);
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -1811,21 +1807,13 @@ YsArray <T,MinimumLength,SizeType> &YsArray <T,MinimumLength,SizeType>::MoveFrom
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Resize(SizeType neoSize)
 {
-	try
-	{
-		vv.resize(neoSize);
-		return YSOK;
-	}
-	catch (...)
-	{
-		return YSERR;
-	}
+	return Alloc(neoSize, YSTRUE);
 }
 
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::ResizeNoCopy(SizeType newSize)
 {
-	return Resize(newSize);
+	return AllocWithoutCopy(newSize);
 }
 
 template <class T,const int MinimumLength,class SizeType>
@@ -2000,15 +1988,7 @@ YSRESULT YsArray<T,MinimumLength,SizeType>::DeleteLast(void)
 template <class T,const int MinimumLength,class SizeType>
 YSRESULT YsArray<T,MinimumLength,SizeType>::Increment(void)
 {
-	try
-	{
-		vv.reserve(vv.size() + 1);
-	}
-	catch (...)
-	{
-		return YSERR;
-	}
-	return YSOK;
+	return Alloc(GetN() + 1, YSTRUE);
 }
 
 template <class T,const int MinimumLength,class SizeType>
