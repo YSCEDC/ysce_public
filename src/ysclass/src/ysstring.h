@@ -1182,7 +1182,8 @@ inline void YsGenericString<CHARTYPE>::CleanUp(void)
 template <class CHARTYPE>
 inline YSSIZE_T YsGenericString <CHARTYPE>::Strlen(void) const
 {
-	return YsArray <CHARTYPE,16>::GetN()-1;
+	auto vvSize = YsArray <CHARTYPE, 16>::GetN();
+	return vvSize > 0 ? vvSize - 1 : 0;
 }
 
 template <class CHARTYPE>
