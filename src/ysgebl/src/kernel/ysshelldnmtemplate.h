@@ -1263,6 +1263,21 @@ YSRESULT YsShellDnmContainer<SHLCLASS,NODESTATE_EXTRA_INFO>::ReadDnmOneLine(Read
 {
 	YsArray <YsString,16> av;
 
+	YsString checkStr = str;
+
+	if (checkStr.CharIsOneOf(',', checkStr) == YSTRUE)
+	{
+		for (int i = 0; i < checkStr.length(); i++)
+		{
+			if (checkStr[i] == ',')
+			{
+				checkStr.Set(i, '.');
+				ReadDnmOneLine(var, checkStr);
+				return YSOK;
+			}
+		}
+	}
+
 	if(keyWordList.GetN()==0)
 	{
 		keyWordList.MakeList(keyWordSource);
