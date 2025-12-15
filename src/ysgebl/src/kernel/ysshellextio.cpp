@@ -128,16 +128,29 @@ YsShellPolygonHandle YsShellExtReader::GetPolygonHandle(const char arg[],const c
 
 YSRESULT YsShellExtReader::MergeSrf(YsShellExt &shl,YsTextInputStream &inStream)
 {
-	YSRESULT res=YSOK;
+	YSRESULT res = YSOK;
 
 	StartMergeSrf(shl);
 
 	YsString str;
-	while(NULL!=inStream.Gets(str))
+
+	inStream.Gets(str);
+	if (str.DoesStartWith("DYNA") == YSTRUE) //This is a DNM being loaded as SRF
 	{
-		if(YSOK!=ReadSrfOneLine(shl,str))
+		while (str.DoesStartWith("SURF") != YSTRUE) //Throw away DNM header
 		{
-			res=YSERR;
+			inStream.Gets(str);
+		}
+	}
+	while (str.DoesStartWith("PCK") != YSTRUE && str.DoesStartWith("SRF") != YSTRUE) //Stop reading if next DNM entry is reached
+	{
+		if (YSOK != ReadSrfOneLine(shl, str))
+		{
+			res = YSERR;
+		}
+		if (inStream.Gets(str) == NULL)
+		{
+			break;
 		}
 	}
 
