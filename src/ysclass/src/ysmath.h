@@ -35,11 +35,18 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ysdef.h"
 
-/*! An inline template function that returns absoluve value of the parameter. */
+/*! An inline template function that returns absolute value of the parameter. */
 template <class T>
 inline const T YsAbs(const T &a)
 {
 	return (a>=0 ? a : -a);
+}
+
+/*! An inline template function that returns the sign of the parameter. */
+template <class T>
+inline const T YsSign(const T& a)
+{
+	return (a >= 0 ? 1 : -1);
 }
 
 #define YsEqual(a,b) (YsAbs((a)-(b))<=YsTolerance ? YSTRUE : YSFALSE)
