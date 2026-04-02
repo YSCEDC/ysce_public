@@ -56,6 +56,10 @@ void YsGLBufferManager::ActualBuffer::PrepareDisplayList(YSSIZE_T nList)
 }
 /* static */ void YsGLBufferManager::Unit::Delete(YsGLBufferManager::ActualBuffer *ptr)
 {
+	if(nullptr==ptr)
+	{
+		return;
+	}
 	for(auto &buf : ptr->bufSet)
 	{
 		if(GL_TRUE==glIsList(buf.listIdent))
