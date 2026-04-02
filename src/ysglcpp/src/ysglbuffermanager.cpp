@@ -108,7 +108,11 @@ void YsGLBufferManager::Delete(Handle hd)
 {
 	if(nullptr!=hd)
 	{
-		bufferArray[hd]->CleanUp();
+		auto *ptr=bufferArray[hd];
+		if(nullptr!=ptr)
+		{
+			ptr->CleanUp();
+		}
 		bufferArray.Delete(hd);
 	}
 }

@@ -68,6 +68,10 @@ void YsGLBufferManager::ActualBuffer::PrepareVbo(YSSIZE_T nVbo)
 }
 /* static */ void YsGLBufferManager::Unit::Delete(YsGLBufferManager::ActualBuffer *ptr)
 {
+	if(nullptr==ptr)
+	{
+		return;
+	}
 	for(auto &buf : ptr->bufSet)
 	{
 		if(GL_TRUE==glIsBuffer(buf.vboIdent))
